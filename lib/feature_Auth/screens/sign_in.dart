@@ -42,6 +42,7 @@ class SignIn extends HookWidget {
       }
 
       getStoredCredentials();
+      return null;
     }, []);
 
     void signIn() async {

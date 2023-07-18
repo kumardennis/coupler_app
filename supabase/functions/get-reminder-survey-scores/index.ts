@@ -31,12 +31,12 @@ serve(async (req: Request) => {
       ])
     ) {
       return new Response(JSON.stringify(errorResponseData), {
-        headers: { "Content-Type": "application/json" },
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const { data, error } = await supabase.from("reminders_surveys").select(
-      "id, score",
+      "id, score, created_at",
     ).match({ userId });
 
     const responseData = {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:coupler_app/feature_Auth/models/couple_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../getx_controllers/couple_controller.dart';
 import '../getx_controllers/user_controller.dart';
 import '../models/user_model.dart';
 
@@ -18,6 +20,7 @@ JsonEncoder encoder = const JsonEncoder.withIndent('  ');
 class SupabaseAuthManger {
   final supabseClient = SupabaseClient(supabaseUrl, anonKey);
   final userController = Get.put(UserController());
+  final coupleController = Get.put(CoupleController());
 
   Future<void> signOut(String email, String password) async {
     final prefs = await SharedPreferences.getInstance();
@@ -65,6 +68,25 @@ class SupabaseAuthManger {
             session.accessToken);
 
         userController.loadUser(userProfileClassed);
+
+        final coupleResponse = await Supabase.instance.client.functions.invoke(
+            'get-couple',
+            headers: {'Authorization': 'Bearer ${session.accessToken}'},
+            body: {"userId": userRecordResponse[0]['id']});
+
+        final data = await coupleResponse.data;
+
+        if (data['error'] != null) {
+          print('TEST');
+          Get.snackbar('Oops..', data['error'].toString());
+        }
+
+        CoupleModel couplesData = (data['data'] as List)
+            .map((e) => CoupleModel.fromJson(e))
+            .toList()
+            .first;
+
+        coupleController.loadCouple(couplesData);
 
         prefs.setString('email', email);
         prefs.setString('password', password);

@@ -7,22 +7,41 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../feature_Navigation/getxControllers/navigation_controller.dart';
 import '../../shared_widgets/forward_button.dart';
 import '../getxControllers/ReminderNavigationController.dart';
+import '../models/CoupleReminderNeeds.dart';
+import '../utils/getSetReminderNeeds.dart';
+import '../widgets/questionnaire_summary_box.dart';
 
-class QuestionnaireIntro extends HookWidget {
-  const QuestionnaireIntro({super.key});
+class SurveySummary extends HookWidget {
+  const SurveySummary({super.key});
 
   @override
   Widget build(BuildContext context) {
     final RemindersNavigationController remindersController = Get.find();
 
+    ValueNotifier<List<CoupleReminderNeeds>> coupleReminderNeeds = useState([]);
+
+    final getSetReminderNeeds = GetSetReminderNeeds();
+
+    useEffect(() {
+      Future<void> getNeeds() async {
+        List<CoupleReminderNeeds>? need =
+            await getSetReminderNeeds.getAverageReminderNeeds();
+        coupleReminderNeeds.value = need!;
+      }
+
+      getNeeds();
+    }, []);
+
     return (Scaffold(
       appBar: CustomAppbar(
         title: 'hd_Reminders',
-        subtitle: 'hd_Questionnaire',
+        subtitle: 'hd_Overview',
         appbarIcon: FaIcon(
           FontAwesomeIcons.listCheck,
           color: Theme.of(context).colorScheme.darkPink,
@@ -42,48 +61,29 @@ class QuestionnaireIntro extends HookWidget {
                   right: 20.0, left: 20.0, top: 50.0, bottom: 30.0),
               child: Column(
                 children: [
-                  BubbleContainer(
-                      icon: FaIcon(
-                        FontAwesomeIcons.gear,
-                        color: Theme.of(context).colorScheme.light,
-                      ),
-                      position: 'START',
-                      children: [
-                        Text(
-                          'inf_QuestionnaireFirstGear'.tr,
-                          style: Theme.of(context).textTheme.headlineLarge,
-                          textAlign: TextAlign.center,
-                        ),
-                      ]),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(child: SfCartesianChart()),
+                    ],
+                  ),
                   const SizedBox(
                     height: 50,
                   ),
-                  BubbleContainer(position: 'END', children: [
+                  BubbleContainer(position: 'MIDDLE', children: [
                     Text(
-                      'lbl_QuestionnaireYourNeedsPart1'.tr,
-                      style: Theme.of(context).textTheme.headlineMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Text(
-                      'lbl_QuestionnaireYourNeedsPart2'.tr,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.w500),
-                      textAlign: TextAlign.center,
+                      'inf_ReminderSummary'.tr,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ]),
                   const SizedBox(
                     height: 50,
                   ),
                   ForwardButton(
-                    label: 'btn_LetsBegin'.tr,
+                    label: 'btn_ReDoSurvey'.tr,
                     onTap: () {
-                      remindersController.changeReminderRoute(
-                          RemindersRoutes.questionnaireQuestions);
+                      remindersController
+                          .changeReminderRoute(RemindersRoutes.firstSurvey);
                     },
                   )
                 ],

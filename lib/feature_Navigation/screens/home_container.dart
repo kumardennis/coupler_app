@@ -1,15 +1,21 @@
 import 'package:coupler_app/color_scheme.dart';
+import 'package:coupler_app/feature_Reminders/utils/getSetReminderNeeds.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import '../../feature_Dashboard/screens/dashboard.dart';
+import '../../feature_Reminders/getxControllers/ReminderNavigationController.dart';
 import '../../feature_Reminders/screens/first_survey.dart';
 import '../../feature_Reminders/screens/reminders_screens.dart';
 import '../getxControllers/navigation_controller.dart';
 
-class HomeContainer extends StatelessWidget {
+class HomeContainer extends HookWidget {
   @override
   Widget build(BuildContext context) {
+    final RemindersNavigationController remindersController =
+        Get.put(RemindersNavigationController());
+
     return GetBuilder<NavigationController>(
       init: NavigationController(),
       builder: (controller) {
@@ -30,6 +36,11 @@ class HomeContainer extends StatelessWidget {
                 unselectedItemColor: Theme.of(context).colorScheme.dark,
                 onTap: (index) {
                   controller.changeIndex(index);
+
+                  if (index == 1) {
+                    remindersController
+                        .changeReminderRoute(RemindersRoutes.remindersSummary);
+                  }
                 },
                 items: <BottomNavigationBarItem>[
                   BottomNavigationBarItem(

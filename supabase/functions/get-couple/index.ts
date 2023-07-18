@@ -35,7 +35,7 @@ serve(async (req: Request) => {
     }
 
     const { data, error } = await supabase.from("couples").select(
-      "id, partner1:users!couples_partner1_id_fkey(name, profileImage), partner2:users!couples_partner2_id_fkey(name, profileImage), anniversary, isActive",
+      "id, partner1:users!couples_partner1_id_fkey(id, name, profileImage), partner2:users!couples_partner2_id_fkey(id, name, profileImage), anniversary, isActive",
     ).or(`partner1_id.eq.${userId},partner2_id.eq.${userId}`);
 
     const responseData = {

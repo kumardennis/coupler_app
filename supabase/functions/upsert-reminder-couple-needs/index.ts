@@ -21,15 +21,17 @@ serve(async (req: Request) => {
   const supabase = createSupabase(req);
 
   try {
-    const { reminderNeedId, coupleId, frequency, timePeriod } = await req
-      .json();
+    const { reminderNeedId, coupleId, frequency, timePeriodInDays, userId } =
+      await req
+        .json();
 
     if (
       !confirmedRequiredParams([
         reminderNeedId,
         coupleId,
         frequency,
-        timePeriod,
+        timePeriodInDays,
+        userId,
       ])
     ) {
       return new Response(JSON.stringify(errorResponseData), {
@@ -41,37 +43,47 @@ serve(async (req: Request) => {
     const { data: oldData, error: oldError } = await supabase
       .from("couples_reminder_needs")
       .select("frequency")
-      .eq("coupleId", coupleId)
-      .eq("reminderNeedId", reminderNeedId);
-
-    let oldFrequency = 0;
+      .match({ coupleId, reminderNeedId, userId });
 
     if (oldError || !oldData || oldData.length === 0) {
-      console.log("old frequency not found");
+      const { data, error } = await supabase.from("couples_reminder_needs")
+        .insert({
+          reminderNeedId,
+          coupleId,
+          userId,
+          frequency: frequency,
+          timePeriodInDays,
+        }).select();
+
+      const responseData = {
+        isRequestSuccessfull: error === null,
+        data,
+        error,
+      };
+
+      return new Response(JSON.stringify(responseData), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     } else {
-      oldFrequency = oldData[0].frequency;
+      const { data, error } = await supabase.from("couples_reminder_needs")
+        .update({
+          reminderNeedId,
+          coupleId,
+          userId,
+          frequency: frequency,
+          timePeriodInDays,
+        }).match({ coupleId, reminderNeedId, userId }).select();
+
+      const responseData = {
+        isRequestSuccessfull: error === null,
+        data,
+        error,
+      };
+
+      return new Response(JSON.stringify(responseData), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
-
-    // Calculate the new average frequency
-    const newFrequency = (oldFrequency + frequency) / 2;
-
-    const { data, error } = await supabase.from("couples_reminder_needs")
-      .upsert({
-        reminderNeedId,
-        coupleId,
-        frequency: newFrequency,
-        timePeriod,
-      }).match({ coupleId, reminderNeedId }).select();
-
-    const responseData = {
-      isRequestSuccessfull: error === null,
-      data,
-      error,
-    };
-
-    return new Response(JSON.stringify(responseData), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
   } catch (err) {
     const responseData = {
       isRequestSuccessful: false,

@@ -1,5 +1,6 @@
 import 'package:coupler_app/color_scheme.dart';
 import 'package:coupler_app/shared_widgets/bubble_container.dart';
+import 'package:coupler_app/shared_widgets/bulb_tip.dart';
 import 'package:coupler_app/shared_widgets/custom_appbar.dart';
 import 'package:coupler_app/shared_widgets/forward_button.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../getxControllers/ReminderNavigationController.dart';
+import '../utils/getSetReminderSurvey.dart';
 
 class FirstSurvey extends HookWidget {
   const FirstSurvey({super.key});
@@ -17,6 +19,8 @@ class FirstSurvey extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final RemindersNavigationController remindersController = Get.find();
+
+    final getSetReminderSurvey = GetSetReminderSurvey();
 
     ValueNotifier<double> currentSliderValue = useState(0);
 
@@ -41,22 +45,29 @@ class FirstSurvey extends HookWidget {
           ),
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.only(
+                  right: 20.0, left: 20.0, top: 50.0, bottom: 30.0),
               child: Column(children: [
-                BubbleContainer(position: 'START', children: [
-                  Text(
-                    'qt_FirstSurvey'.tr,
-                    style: GoogleFonts.merienda(
-                        fontSize: 18, fontWeight: FontWeight.w600),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      'qt_FirstSurveyAuthor'.tr,
-                      style: Theme.of(context).textTheme.bodySmall,
+                BubbleContainer(
+                    icon: FaIcon(
+                      FontAwesomeIcons.quoteLeft,
+                      color: Theme.of(context).colorScheme.light,
                     ),
-                  )
-                ]),
+                    position: 'START',
+                    children: [
+                      Text(
+                        'qt_FirstSurvey'.tr,
+                        style: GoogleFonts.merienda(
+                            fontSize: 18, fontWeight: FontWeight.w600),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          'qt_FirstSurveyAuthor'.tr,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      )
+                    ]),
                 const SizedBox(
                   height: 30.0,
                 ),
@@ -119,31 +130,26 @@ class FirstSurvey extends HookWidget {
                 const SizedBox(
                   height: 30,
                 ),
-                Row(
-                  children: [
-                    FaIcon(
-                      FontAwesomeIcons.lightbulb,
-                      color: Theme.of(context).colorScheme.brightPink,
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Expanded(
-                      child: Text(
-                        'tip_FirstSurvey'.tr,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.dark),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
+                BulbTip(
+                    text: Text(
+                  'tip_FirstSurvey'.tr,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: Theme.of(context).colorScheme.dark),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                )),
                 ForwardButton(
                   label: 'btn_ContinueToQuestionnaire'.tr,
                   onTap: () {
                     remindersController.changeReminderRoute(
                         RemindersRoutes.questionnaireIntro);
+
+                    if (currentSliderValue.value != 0) {
+                      getSetReminderSurvey
+                          .setReminderSurveyScore(currentSliderValue);
+                    }
                   },
                 )
               ]),

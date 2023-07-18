@@ -21,7 +21,7 @@ serve(async (req: Request) => {
   const supabase = createSupabase(req);
 
   try {
-    const { coupleId } = await req
+    const { coupleId, userId, reminderNeedId } = await req
       .json();
 
     if (
@@ -30,14 +30,24 @@ serve(async (req: Request) => {
       ])
     ) {
       return new Response(JSON.stringify(errorResponseData), {
-        headers: { "Content-Type": "application/json" },
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const { data, error } = await supabase.from("couples_reminder_needs")
+    let query = supabase.from("couples_reminder_needs")
       .select(
-        "id, reminder_needs(id, reminderText), coupleId, frequency, timePeriod",
-      ).match({ coupleId });
+        "id, reminder_needs!inner(id, reminderText), users(id, name), coupleId, frequency, timePeriodInDays",
+      ).eq("coupleId", coupleId);
+
+    if (reminderNeedId) {
+      query = query.filter("reminder_needs.id", "eq", reminderNeedId);
+    }
+
+    if (userId) {
+      query = query.eq("userId", userId);
+    }
+
+    const { data, error } = await query;
 
     const responseData = {
       isRequestSuccessfull: error === null,
