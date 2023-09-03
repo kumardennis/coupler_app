@@ -35,7 +35,7 @@ class SignIn extends HookWidget {
         if (storedPassword != null) textController2.text = storedPassword;
 
         if (storedEmail != null && storedPassword != null) {
-          await _supabase.signIn(storedEmail, storedPassword);
+          // await _supabase.signIn(storedEmail, storedPassword);
         }
 
         if (storedPassword != null) textController2.text = storedPassword;

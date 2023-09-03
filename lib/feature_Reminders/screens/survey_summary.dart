@@ -11,6 +11,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../feature_Navigation/getxControllers/navigation_controller.dart';
+import '../../feature_UsSettings/getXControllers/user_settings_controller.dart';
+import '../../shared_widgets/background.dart';
 import '../../shared_widgets/forward_button.dart';
 import '../getxControllers/ReminderNavigationController.dart';
 import '../models/CoupleReminderNeeds.dart';
@@ -28,6 +30,8 @@ class SurveySummary extends HookWidget {
 
     final getSetReminderNeeds = GetSetReminderNeeds();
 
+    final UserSettingsController userSettingsController = Get.find();
+
     useEffect(() {
       Future<void> getNeeds() async {
         List<CoupleReminderNeeds>? need =
@@ -44,17 +48,14 @@ class SurveySummary extends HookWidget {
         subtitle: 'hd_Overview',
         appbarIcon: FaIcon(
           FontAwesomeIcons.listCheck,
-          color: Theme.of(context).colorScheme.darkPink,
+          color: userSettingsController.user.value.darkMode
+              ? Theme.of(context).colorScheme.lightPink
+              : Theme.of(context).colorScheme.darkPink,
         ),
       ),
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/images/tile_background.png'),
-                    fit: BoxFit.cover)),
-          ),
+          Background(),
           SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.only(

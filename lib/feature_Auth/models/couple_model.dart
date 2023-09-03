@@ -12,12 +12,16 @@ class CoupleModel {
   late final Partner? partner1;
   late final Partner? partner2;
 
-  CoupleModel.fromJson(Map<String, dynamic> json) {
+  CoupleModel.fromJson(Map<String, dynamic> json, int userId) {
     id = json['id'];
     anniversary = json['anniversary'];
     isActive = json['isActive'];
-    partner1 = Partner.fromJson(json['partner1']);
-    partner2 = Partner.fromJson(json['partner2']);
+    partner1 = json['partner1']['id'] == userId
+        ? Partner.fromJson(json['partner1'])
+        : Partner.fromJson(json['partner2']);
+    partner2 = json['partner1']['id'] == userId
+        ? Partner.fromJson(json['partner2'])
+        : Partner.fromJson(json['partner1']);
   }
 
   Map<String, dynamic> toJson() {

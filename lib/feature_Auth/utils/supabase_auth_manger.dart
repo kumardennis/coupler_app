@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:coupler_app/feature_Auth/models/couple_model.dart';
+import 'package:coupler_app/feature_UsSettings/models/user_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -8,11 +9,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../feature_UsSettings/getXControllers/user_settings_controller.dart';
 import '../getx_controllers/couple_controller.dart';
 import '../getx_controllers/user_controller.dart';
 import '../models/user_model.dart';
 
-const String supabaseUrl = 'http://localhost:54321';
+const String supabaseUrl = 'http://localhost:64321';
 final String anonKey = dotenv.env['SUPABASE_LOCAL_ANON_KEY'] ?? '';
 
 JsonEncoder encoder = const JsonEncoder.withIndent('  ');
@@ -21,6 +23,7 @@ class SupabaseAuthManger {
   final supabseClient = SupabaseClient(supabaseUrl, anonKey);
   final userController = Get.put(UserController());
   final coupleController = Get.put(CoupleController());
+  final userSettingController = Get.put(UserSettingsController());
 
   Future<void> signOut(String email, String password) async {
     final prefs = await SharedPreferences.getInstance();
@@ -69,8 +72,19 @@ class SupabaseAuthManger {
 
         userController.loadUser(userProfileClassed);
 
+        final userSettingsResponse = await supabseClient
+            .from('user_settings')
+            .select('darkMode, blueAccent')
+            .eq('userId', userProfileClassed.id);
+
+        print(userSettingsResponse);
+
+        userSettingController.loadUser(UserSettings(
+            darkMode: userSettingsResponse[0]['darkMode'],
+            blueAccent: userSettingsResponse[0]['blueAccent']));
+
         final coupleResponse = await Supabase.instance.client.functions.invoke(
-            'get-couple',
+            'auth-and-settings/get-couple',
             headers: {'Authorization': 'Bearer ${session.accessToken}'},
             body: {"userId": userRecordResponse[0]['id']});
 
@@ -82,7 +96,7 @@ class SupabaseAuthManger {
         }
 
         CoupleModel couplesData = (data['data'] as List)
-            .map((e) => CoupleModel.fromJson(e))
+            .map((e) => CoupleModel.fromJson(e, userRecordResponse[0]['id']))
             .toList()
             .first;
 
@@ -90,14 +104,6 @@ class SupabaseAuthManger {
 
         prefs.setString('email', email);
         prefs.setString('password', password);
-
-        String prettyprintSession = encoder.convert(response.session?.toJson());
-
-        // debugPrint(prettyprintSession);
-
-        // String prettyPrintUser = encoder.convert(userProfileClassed);
-
-        // debugPrint(session.accessToken);
 
         Get.toNamed('/home-screen');
 
@@ -155,6 +161,28 @@ class SupabaseAuthManger {
         Get.toNamed('/home-screen');
 
         // final userRecord = userRecordResponse
+      }
+    } catch (err) {
+      debugPrint(err.toString());
+    }
+  }
+
+  Future<void> getUserSettings(userId, accessToken) async {
+    try {
+      final userSettingsResponse = await supabseClient
+          .from('user_settings')
+          .select('darkMode, blueAccent')
+          .eq('userId', userId);
+
+      print(userSettingsResponse);
+
+      userSettingController.loadUser(UserSettings(
+          darkMode: userSettingsResponse[0]['darkMode'],
+          blueAccent: userSettingsResponse[0]['blueAccent']));
+
+      if (userSettingsResponse.data['error'] != null) {
+        print('TEST');
+        Get.snackbar('Oops..', userSettingsResponse.data['error'].toString());
       }
     } catch (err) {
       debugPrint(err.toString());

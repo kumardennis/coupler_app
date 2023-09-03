@@ -69,7 +69,10 @@ class QuestionnaireSummaryBox extends HookWidget {
             children: [
               Text(
                 questionText,
-                style: Theme.of(context).textTheme.headlineSmall,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: Theme.of(context).colorScheme.dark),
                 textAlign: TextAlign.end,
               ),
             ],

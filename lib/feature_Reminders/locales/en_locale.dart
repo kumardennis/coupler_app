@@ -2,6 +2,7 @@ Map<String, String> remindersLocales_EN = {
   'qt_FirstSurvey': 'River knows there is no need to rush. Once we get there.',
   'hd_FirstSurvey': 'First survey',
   'qt_FirstSurveyAuthor': ' - A. A. Milne',
+  'hd_ReEvaluate': 'Re-evalutate your needs',
   'inf_FirstSurveyPart1':
       'A wonderful lover! You and your partner are now at the starting point of your joint adventure.',
   'inf_FirstSurveyPart2':
@@ -49,5 +50,9 @@ Map<String, String> remindersLocales_EN = {
   'qt_SomethingMissingInRelationship':
       'Feeling something is missing in your relationship?',
   'hd_ReDoSurvey': 'Re-evaluate satisfaction',
-  'hd_Overview': 'Overview'
+  'hd_Overview': 'Overview',
+  'inf_ReminderSurveyPart1':
+      'Dear lover! Regular relationship satisfaction survey helps you to put focus into right place. It is time to evaluate how satisfied you are with expierences in your partner relationship ',
+  'inf_ReminderSurveyPart2':
+      'To what extent is your need for romance, care and communication fulfilled?',
 };

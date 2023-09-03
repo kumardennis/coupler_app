@@ -9,6 +9,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 import '../../feature_Navigation/getxControllers/navigation_controller.dart';
+import '../../feature_UsSettings/getXControllers/user_settings_controller.dart';
+import '../../shared_widgets/background.dart';
 import '../../shared_widgets/forward_button.dart';
 import '../getxControllers/ReminderNavigationController.dart';
 
@@ -19,23 +21,22 @@ class QuestionnaireIntro extends HookWidget {
   Widget build(BuildContext context) {
     final RemindersNavigationController remindersController = Get.find();
 
+    final UserSettingsController userSettingsController = Get.find();
+
     return (Scaffold(
       appBar: CustomAppbar(
         title: 'hd_Reminders',
         subtitle: 'hd_Questionnaire',
         appbarIcon: FaIcon(
           FontAwesomeIcons.listCheck,
-          color: Theme.of(context).colorScheme.darkPink,
+          color: userSettingsController.user.value.darkMode
+              ? Theme.of(context).colorScheme.lightPink
+              : Theme.of(context).colorScheme.darkPink,
         ),
       ),
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/images/tile_background.png'),
-                    fit: BoxFit.cover)),
-          ),
+          Background(),
           SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.only(

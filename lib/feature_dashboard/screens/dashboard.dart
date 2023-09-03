@@ -1,6 +1,7 @@
 import 'package:coupler_app/color_scheme.dart';
 import 'package:coupler_app/feature_Auth/getx_controllers/user_controller.dart';
 import 'package:coupler_app/feature_Reminders/models/CoupleReminderNeeds.dart';
+import 'package:coupler_app/shared_widgets/background.dart';
 import 'package:coupler_app/shared_widgets/bubble_container.dart';
 import 'package:coupler_app/shared_widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:get/get.dart';
 import '../../feature_Navigation/getxControllers/navigation_controller.dart';
 import '../../feature_Reminders/getxControllers/ReminderNavigationController.dart';
 import '../../feature_Reminders/utils/getSetReminderNeeds.dart';
+import '../../feature_UsSettings/getXControllers/user_settings_controller.dart';
 import '../../shared_widgets/forward_button.dart';
 import '../widgets/reminders_untouched.dart';
 
@@ -21,6 +23,8 @@ class Dashboard extends HookWidget {
     final getSetReminders = GetSetReminderNeeds();
 
     final UserController userController = Get.find();
+
+    final UserSettingsController userSettingsController = Get.find();
 
     final RemindersNavigationController remindersController = Get.find();
     final NavigationController navigationController = Get.find();
@@ -45,12 +49,7 @@ class Dashboard extends HookWidget {
     return (Scaffold(
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/images/tile_background.png'),
-                    fit: BoxFit.cover)),
-          ),
+          Background(),
           SingleChildScrollView(
             child: Padding(
                 padding: const EdgeInsets.only(
@@ -66,7 +65,9 @@ class Dashboard extends HookWidget {
         subtitle: 'lbl_GetOverview',
         appbarIcon: FaIcon(
           FontAwesomeIcons.house,
-          color: Theme.of(context).colorScheme.darkPink,
+          color: userSettingsController.user.value.darkMode
+              ? Theme.of(context).colorScheme.lightPink
+              : Theme.of(context).colorScheme.darkPink,
         ),
       ),
     ));

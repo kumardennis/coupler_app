@@ -2,6 +2,7 @@ Map<String, String> dashboardLocales_EN = {
   'hd_Dashboard': 'Dashboard',
   'lbl_GetOverview': 'Get an overview',
   'hd_Reminders': 'Reminders',
+  'hd_GetAcquainted': 'Get acquainted',
   'lbl_FirstSurvey': 'First surevy',
   'inf_Welcome': 'Welcome!',
   'inf_ReminderNotTouched':

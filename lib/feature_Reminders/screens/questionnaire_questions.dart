@@ -2,6 +2,7 @@ import 'package:coupler_app/color_scheme.dart';
 import 'package:coupler_app/feature_Auth/getx_controllers/couple_controller.dart';
 import 'package:coupler_app/feature_Auth/getx_controllers/user_controller.dart';
 import 'package:coupler_app/feature_Reminders/utils/getSetReminderNeeds.dart';
+import 'package:coupler_app/shared_widgets/background.dart';
 import 'package:coupler_app/shared_widgets/bubble_container.dart';
 import 'package:coupler_app/shared_widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../feature_Navigation/getxControllers/navigation_controller.dart';
+import '../../feature_UsSettings/getXControllers/user_settings_controller.dart';
 import '../../shared_widgets/forward_button.dart';
 import '../models/CoupleReminderNeeds.dart';
 import '../widgets/questionnaire_question_box.dart';
@@ -26,6 +28,8 @@ class QuestionnaireQuestions extends HookWidget {
     final UserController userController = Get.find();
     final CoupleController coupleController = Get.find();
 
+    final UserSettingsController userSettingsController = Get.find();
+
     ValueNotifier<int> currentPage = useState(0);
 
     final getSetReminderNeeds = GetSetReminderNeeds();
@@ -36,17 +40,14 @@ class QuestionnaireQuestions extends HookWidget {
         subtitle: 'hd_Questionnaire',
         appbarIcon: FaIcon(
           FontAwesomeIcons.listCheck,
-          color: Theme.of(context).colorScheme.darkPink,
+          color: userSettingsController.user.value.darkMode
+              ? Theme.of(context).colorScheme.lightPink
+              : Theme.of(context).colorScheme.darkPink,
         ),
       ),
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/images/tile_background.png'),
-                    fit: BoxFit.cover)),
-          ),
+          Background(),
           SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.only(
@@ -61,7 +62,9 @@ class QuestionnaireQuestions extends HookWidget {
                           .textTheme
                           .headlineSmall
                           ?.copyWith(
-                              color: Theme.of(context).colorScheme.darkPink),
+                              color: userSettingsController.user.value.darkMode
+                                  ? Theme.of(context).colorScheme.lightPink
+                                  : Theme.of(context).colorScheme.darkPink),
                       textAlign: TextAlign.right,
                     ),
                   ),

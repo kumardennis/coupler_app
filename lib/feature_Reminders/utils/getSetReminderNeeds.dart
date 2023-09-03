@@ -13,7 +13,7 @@ class GetSetReminderNeeds {
   Future<List<CoupleReminderNeeds>?> getReminderNeeds([reminderNeedId]) async {
     try {
       final response = await Supabase.instance.client.functions
-          .invoke('get-reminder-couple-needs', headers: {
+          .invoke('reminders/get-reminder-couple-needs', headers: {
         'Authorization': 'Bearer ${userController.user.value.accessToken}'
       }, body: {
         "coupleId": coupleController.couple.value.id,
@@ -43,7 +43,7 @@ class GetSetReminderNeeds {
   Future<void> setReminderNeeds(reminderNeedId, frequency, timePeriod) async {
     try {
       final response = await Supabase.instance.client.functions
-          .invoke('upsert-reminder-couple-needs', headers: {
+          .invoke('reminders/upsert-reminder-couple-needs', headers: {
         'Authorization': 'Bearer ${userController.user.value.accessToken}'
       }, body: {
         "coupleId": coupleController.couple.value.id,
@@ -73,7 +73,7 @@ class GetSetReminderNeeds {
   Future<List<CoupleReminderNeeds>?> getAverageReminderNeeds() async {
     try {
       final partner1Response = await Supabase.instance.client.functions
-          .invoke('get-reminder-couple-needs', headers: {
+          .invoke('reminders/get-reminder-couple-needs', headers: {
         'Authorization': 'Bearer ${userController.user.value.accessToken}'
       }, body: {
         "coupleId": coupleController.couple.value.id,
@@ -83,7 +83,7 @@ class GetSetReminderNeeds {
       final data1 = await partner1Response.data;
 
       final partner2Response = await Supabase.instance.client.functions
-          .invoke('get-reminder-couple-needs', headers: {
+          .invoke('reminders/get-reminder-couple-needs', headers: {
         'Authorization': 'Bearer ${userController.user.value.accessToken}'
       }, body: {
         "coupleId": coupleController.couple.value.id,

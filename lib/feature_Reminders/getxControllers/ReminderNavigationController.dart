@@ -5,7 +5,7 @@ enum RemindersRoutes {
   firstSurvey,
   questionnaireIntro,
   questionnaireQuestions,
-
+  reminderSurvey,
   surveySummary
 }
 

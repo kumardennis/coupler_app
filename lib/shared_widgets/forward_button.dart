@@ -8,7 +8,9 @@ import '../feature_Navigation/getxControllers/navigation_controller.dart';
 class ForwardButton extends GetWidget<NavigationController> {
   final String label;
   final Function onTap;
-  const ForwardButton({super.key, required this.label, required this.onTap});
+  final FaIcon? icon;
+  const ForwardButton(
+      {super.key, required this.label, required this.onTap, this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class ForwardButton extends GetWidget<NavigationController> {
                 const SizedBox(
                   width: 10,
                 ),
-                const FaIcon(FontAwesomeIcons.caretRight)
+                icon ?? const FaIcon(FontAwesomeIcons.caretRight)
               ],
             ),
           )),

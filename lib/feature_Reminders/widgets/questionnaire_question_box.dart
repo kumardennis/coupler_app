@@ -63,7 +63,10 @@ class QuestionnaireQuestionBox extends HookWidget {
             children: [
               Text(
                 questionText,
-                style: Theme.of(context).textTheme.headlineLarge,
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineLarge
+                    ?.copyWith(color: Theme.of(context).colorScheme.darkPink),
                 textAlign: TextAlign.start,
               ),
             ],

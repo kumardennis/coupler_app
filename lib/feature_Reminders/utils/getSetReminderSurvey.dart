@@ -11,14 +11,15 @@ class GetSetReminderSurvey {
   final UserController userController = Get.find();
   final CoupleController coupleController = Get.find();
 
-  Future<List<CoupleReminderSurvey>?> getReminderSurveyScores() async {
+  Future<List<CoupleReminderSurvey>?> getReminderSurveyScores(
+      [int? userId]) async {
     try {
       final response = await Supabase.instance.client.functions
-          .invoke('get-reminder-survey-scores', headers: {
+          .invoke('reminders/get-reminder-survey-scores', headers: {
         'Authorization': 'Bearer ${userController.user.value.accessToken}'
       }, body: {
         "coupleId": coupleController.couple.value.id,
-        "userId": userController.user.value.id
+        "userId": userId ?? userController.user.value.id
       });
 
       final data = await response.data;
@@ -43,7 +44,7 @@ class GetSetReminderSurvey {
   Future<void> setReminderSurveyScore(score) async {
     try {
       final response = await Supabase.instance.client.functions
-          .invoke('create-reminder-survey-score', headers: {
+          .invoke('reminders/create-reminder-survey-score', headers: {
         'Authorization': 'Bearer ${userController.user.value.accessToken}'
       }, body: {
         "coupleId": coupleController.couple.value.id,
