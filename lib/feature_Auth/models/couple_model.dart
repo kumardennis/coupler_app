@@ -3,12 +3,17 @@ class CoupleModel {
     required this.id,
     this.anniversary,
     required this.isActive,
+    required this.initiatedById,
+    required this.isAccepted,
     required this.partner1,
     required this.partner2,
   });
   late final int id;
   late final String? anniversary;
   late final bool isActive;
+  late final bool isRejected;
+  late final bool isAccepted;
+  late final int initiatedById;
   late final Partner? partner1;
   late final Partner? partner2;
 
@@ -16,6 +21,9 @@ class CoupleModel {
     id = json['id'];
     anniversary = json['anniversary'];
     isActive = json['isActive'];
+    isRejected = json['isRejected'];
+    isAccepted = json['isAccepted'];
+    initiatedById = json['initiatedById'];
     partner1 = json['partner1']['id'] == userId
         ? Partner.fromJson(json['partner1'])
         : Partner.fromJson(json['partner2']);

@@ -2,7 +2,7 @@ name: coupler_app
 description: A new Flutter project.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.1 <4.0.0'
+  sdk: ">=3.0.1 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -32,7 +32,7 @@ dependencies:
     sdk: flutter
   social_login_buttons: ^1.0.7
   google_fonts: ^4.0.4
-  intl: ^0.18.1
+  intl: ^0.18.0
   badges: ^3.1.1
   json_annotation: ^4.7.0
   cool_alert: ^2.0.1
@@ -44,11 +44,14 @@ dependencies:
   persistent_bottom_nav_bar: ^5.0.2
   step_progress_indicator: ^1.0.2
   flutter_rating_bar: ^4.0.1
-  syncfusion_flutter_charts: ^22.1.34
+  syncfusion_flutter_charts: ^24.1.43
   fl_chart: ^0.63.0
-  flutter_local_notifications: ^15.1.0+1
-  syncfusion_flutter_datepicker: ^22.2.10
-
+  awesome_notifications: any
+  awesome_notifications_core: ^0.9.0
+  syncfusion_flutter_datepicker: ^24.1.43
+  liquid_pull_to_refresh: ^3.0.1
+  timeline_tile: ^2.0.0
+  easy_loader: ^2.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -71,7 +74,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -89,6 +91,11 @@ flutter:
     - assets/images/tile_background_pink_dark.png
     - assets/images/two_hearts_pink.png
     - assets/images/two_hearts_blue.png
+    - assets/images/question_bg_unsplash_ana_municio.jpg
+    - assets/images/thought_of_the_day_unsplash_amy_shamblen.jpg
+    - assets/images/first_survey_unsplash_trent_bradley.jpg
+    - assets/images/get_acquainted_unsplash_brooklyn.jpg
+    - assets/images/recommend_unsplash_lucas_blazek.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

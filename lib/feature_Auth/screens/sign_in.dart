@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:coupler_app/color_scheme.dart';
+import 'package:coupler_app/feature_Auth/widgets/custom_input.dart';
+import 'package:coupler_app/shared_widgets/forward_button.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -46,6 +48,7 @@ class SignIn extends HookWidget {
     }, []);
 
     void signIn() async {
+      print('TEEST');
       await _supabase.signIn(textController1.text, textController2.text);
     }
 
@@ -86,147 +89,14 @@ class SignIn extends HookWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          child: TextFormField(
-                            controller: textController1,
-                            onChanged: (value) {},
-                            autofocus: true,
-                            obscureText: false,
-                            decoration: InputDecoration(
-                              labelStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.dark),
-                              labelText: 'lbl_Username'.tr,
-                              hintStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.dark),
-                              enabledBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0xFFE0F2F1),
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(4.0),
-                                  topRight: Radius.circular(4.0),
-                                ),
-                              ),
-                              focusedBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0xFFE0F2F1),
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(4.0),
-                                  topRight: Radius.circular(4.0),
-                                ),
-                              ),
-                              errorBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(4.0),
-                                  topRight: Radius.circular(4.0),
-                                ),
-                              ),
-                              focusedErrorBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(4.0),
-                                  topRight: Radius.circular(4.0),
-                                ),
-                              ),
-                              suffixIcon: InkWell(
-                                onTap: () async {
-                                  textController1.clear();
-                                },
-                                child: Icon(
-                                  Icons.clear,
-                                  color: Theme.of(context).colorScheme.dark,
-                                  size: 22,
-                                ),
-                              ),
-                            ),
-                            style:
-                                Theme.of(context).textTheme.bodyText1?.copyWith(
-                                      color: Theme.of(context).colorScheme.dark,
-                                    ),
-                            textAlign: TextAlign.start,
-                          ),
+                        CustomInput(
+                          label: 'lbl_Username'.tr,
+                          textController: textController1,
                         ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          child: TextFormField(
-                            controller: textController2,
-                            onChanged: (value) {},
-                            autofocus: true,
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              labelText: 'lbl_Password'.tr,
-                              labelStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.dark),
-                              hintStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.dark),
-                              enabledBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0xFFE0F2F1),
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(4.0),
-                                  topRight: Radius.circular(4.0),
-                                ),
-                              ),
-                              focusedBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0xFFE0F2F1),
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(4.0),
-                                  topRight: Radius.circular(4.0),
-                                ),
-                              ),
-                              errorBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(4.0),
-                                  topRight: Radius.circular(4.0),
-                                ),
-                              ),
-                              focusedErrorBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(4.0),
-                                  topRight: Radius.circular(4.0),
-                                ),
-                              ),
-                              suffixIcon: InkWell(
-                                onTap: () async {
-                                  textController2.clear();
-                                },
-                                child: Icon(
-                                  Icons.clear,
-                                  color: Theme.of(context).colorScheme.dark,
-                                  size: 22,
-                                ),
-                              ),
-                            ),
-                            style:
-                                Theme.of(context).textTheme.bodyText1?.copyWith(
-                                      color: Theme.of(context).colorScheme.dark,
-                                    ),
-                            textAlign: TextAlign.start,
-                          ),
+                        CustomInput(
+                          label: 'lbl_Password'.tr,
+                          textController: textController2,
+                          obscureText: true,
                         ),
                       ],
                     ),
@@ -242,7 +112,7 @@ class SignIn extends HookWidget {
                       style: ElevatedButton.styleFrom(
                           primary: Theme.of(context).colorScheme.dark,
                           elevation: 5,
-                          fixedSize: const Size(100, 80)),
+                          fixedSize: const Size(100, 70)),
                       child: Text(
                         'btn_SignIn'.tr,
                         style: TextStyle(
@@ -251,14 +121,24 @@ class SignIn extends HookWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: SocialLoginButton(
-                      buttonType: SocialLoginButtonType.facebook,
-                      onPressed: () {
-                        signIn();
-                      },
-                    ),
-                  ),
+                      padding: const EdgeInsets.all(30),
+                      child: GestureDetector(
+                          onTap: () {
+                            Get.toNamed('/sign-up');
+                          },
+                          child: Text(
+                            'lbl_SignUp'.tr,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          )))
+                  // Padding(
+                  //   padding: const EdgeInsets.all(10.0),
+                  //   child: SocialLoginButton(
+                  //     buttonType: SocialLoginButtonType.facebook,
+                  //     onPressed: () {
+                  //       signIn();
+                  //     },
+                  //   ),
+                  // ),
                 ],
               ),
             ),

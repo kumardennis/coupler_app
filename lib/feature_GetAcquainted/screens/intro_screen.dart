@@ -47,7 +47,9 @@ class IntroScreen extends HookWidget {
               .sessionSurvey.value!.acquaintedSurveys.predictedScore !=
           null) {
         currentSliderValue.value = getAcquaintedSessionSurveyController
-            .sessionSurvey.value!.acquaintedSurveys.predictedScore as double;
+                .sessionSurvey.value?.acquaintedSurveys.predictedScore
+                ?.toDouble() ??
+            0.0;
       }
 
       return null;

@@ -9,7 +9,18 @@ class UserModel {
   final String? phone;
   final String? email;
   final String accessToken;
+  final String shareableUuid;
 
-  UserModel(this.id, this.created_at, this.firstName, this.lastName, this.name,
-      this.profileImage, this.userId, this.email, this.phone, this.accessToken);
+  UserModel(
+      this.id,
+      this.created_at,
+      this.firstName,
+      this.lastName,
+      this.name,
+      this.profileImage,
+      this.userId,
+      this.email,
+      this.phone,
+      this.accessToken,
+      this.shareableUuid);
 }

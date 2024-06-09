@@ -1,9 +1,13 @@
 import 'package:coupler_app/color_scheme.dart';
+import 'package:coupler_app/feature_Auth/screens/sign_up.dart';
 import 'package:coupler_app/feature_Dashboard/screens/dashboard.dart';
 import 'package:coupler_app/feature_Navigation/screens/home_container.dart';
 import 'package:coupler_app/feature_Reminders/screens/first_survey.dart';
 import 'package:coupler_app/feature_Reminders/screens/questionnaire_intro.dart';
 import 'package:coupler_app/feature_Reminders/screens/reminders_screens.dart';
+import 'package:coupler_app/feature_UsSettings/screens/us_timeline.dart';
+import 'package:coupler_app/feature_dashboard/screens/all_daily_questions.dart';
+import 'package:coupler_app/services/notification_service.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -17,10 +21,17 @@ import 'feature_UsSettings/getXControllers/user_settings_controller.dart';
 import 'locales/locale_en.dart';
 
 void main() async {
-  await dotenv.load(fileName: "../.env");
+  // const localDBUrl = 'http://192.168.196.67:64321';
+  const localDBUrl = 'http://localhost:64321';
+  const remoteDDUrl = 'https://vpofopxljvcsghhtmeup.supabase.co';
+
+  final notificationService = NotificationService();
+
+  notificationService.initializeAwesomeNotifications();
+
+  await dotenv.load();
   await Supabase.initialize(
-      url: 'http://localhost:64321',
-      anonKey: dotenv.env['SUPABASE_LOCAL_ANON_KEY'] ?? '');
+      url: localDBUrl, anonKey: dotenv.env['SUPABASE_LOCAL_ANON_KEY'] ?? '');
   Get.put(NavigationController());
   runApp(MyApp(
     home: SignIn(),
@@ -30,6 +41,8 @@ void main() async {
 class MyApp extends StatelessWidget {
   MyApp({@required this.home});
   final home;
+
+  final notificationService = NotificationService();
 
   // This widget is the root of your application.
   @override
@@ -82,8 +95,13 @@ class MyApp extends StatelessWidget {
         initialRoute: '/sign-in',
         getPages: [
           GetPage(name: '/sign-in', page: () => SignIn()),
+          GetPage(name: '/sign-up', page: () => SignUp()),
           GetPage(name: '/home-screen', page: () => HomeContainer()),
           GetPage(name: '/dashboard', page: () => Dashboard()),
+          GetPage(
+              name: '/all-daily-questions',
+              page: () => AllDailyQuestionsScreen()),
+          GetPage(name: '/us-timeline', page: () => UsTimeline()),
         ],
       ),
     );

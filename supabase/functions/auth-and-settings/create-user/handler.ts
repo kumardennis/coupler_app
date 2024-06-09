@@ -1,15 +1,8 @@
 // Follow this setup guide to integrate the Deno language server with your editor:
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
-import {
-  ConnInfo,
-  Handler,
-  serve,
-} from "https://deno.land/std@0.168.0/http/server.ts";
-import {
-  AuthError,
-  User,
-} from "https://esm.sh/v96/@supabase/gotrue-js@2.16.0/dist/module/index.d.ts";
+
+import { User } from "https://esm.sh/v96/@supabase/gotrue-js@2.16.0/dist/module/index.d.ts";
 import {
   confirmedRequiredParams,
   errorResponseData,
@@ -22,9 +15,9 @@ interface CreateUserStudentResponseModel {
   error: any;
   data:
     | {
-      createdStudentUserData: User | null;
-      createdStudentRecordData: any[] | null;
-    }
+        createdStudentUserData: User | null;
+        createdStudentRecordData: any[] | null;
+      }
     | { user: User | null }
     | null;
 }
@@ -33,18 +26,9 @@ export const handler = async (req: Request) => {
   const supabase = createSupabase(req);
 
   try {
-    const { email, password, phone, firstName, lastName } = await req
-      .json();
+    const { email, password, firstName, lastName } = await req.json();
 
-    if (
-      !confirmedRequiredParams([
-        email,
-        password,
-        phone,
-        firstName,
-        lastName,
-      ])
-    ) {
+    if (!confirmedRequiredParams([email, password, firstName, lastName])) {
       return new Response(JSON.stringify(errorResponseData), {
         headers: { "Content-Type": "application/json" },
       });
@@ -53,7 +37,6 @@ export const handler = async (req: Request) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      phone,
     });
 
     if (error !== null) {
@@ -90,7 +73,7 @@ export const handler = async (req: Request) => {
     };
 
     if (createdStudentRecordData) {
-      const createdUserSettings = await supabase
+      await supabase
         .from("user_settings")
         .insert({
           userId: createdStudentRecordData[0].id,

@@ -40,7 +40,7 @@ class CustomAppbar extends HookWidget implements PreferredSizeWidget {
                 : Theme.of(context).colorScheme.light,
           ], begin: Alignment.topLeft, end: Alignment.bottomRight)),
           child: Padding(
-            padding: const EdgeInsets.only(left: 55.0),
+            padding: const EdgeInsets.only(left: 55.0, top: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -62,19 +62,22 @@ class CustomAppbar extends HookWidget implements PreferredSizeWidget {
                                 '$title'.tr,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .displayLarge
+                                    .displayMedium
                                     ?.copyWith(fontWeight: FontWeight.bold),
                               )
                             ],
                           ),
                           Text('$subtitle'.tr,
-                              style: Theme.of(context).textTheme.displayMedium)
+                              style: Theme.of(context).textTheme.displaySmall)
                         ],
                       ),
                     ],
                   ),
                 ),
-                Image.asset('assets/images/two_hearts_pink.png')
+                Image.asset(
+                  'assets/images/two_hearts_pink.png',
+                  scale: 1.5,
+                )
               ],
             ),
           ),

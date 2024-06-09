@@ -18,14 +18,18 @@ import '../utils/getSetReminderNeeds.dart';
 class QuestionnaireQuestionBox extends HookWidget {
   final String questionText;
   final int currentPage;
+  final ValueNotifier<bool> allPagesFilled;
 
   const QuestionnaireQuestionBox(
-      {super.key, required this.questionText, required this.currentPage});
+      {super.key,
+      required this.questionText,
+      required this.currentPage,
+      required this.allPagesFilled});
 
   @override
   Widget build(BuildContext context) {
-    ValueNotifier<int> timePeriod = useState(1);
-    ValueNotifier<double> frequency = useState(0);
+    final timePeriod = useState(0);
+    final frequency = useState(0.0);
 
     final RemindersNavigationController remindersController = Get.find();
 
@@ -46,8 +50,9 @@ class QuestionnaireQuestionBox extends HookWidget {
           timePeriod.value = need.first.timePeriodInDays;
           frequency.value = need.first.frequency.toDouble();
         } else {
-          timePeriod.value = 1;
-          frequency.value = 1;
+          timePeriod.value = 0;
+          frequency.value = 0;
+          allPagesFilled.value = false;
         }
       }
 
@@ -100,16 +105,17 @@ class QuestionnaireQuestionBox extends HookWidget {
           const SizedBox(
             height: 30,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Wrap(
+            spacing: 5.0,
+            direction: Axis.horizontal,
             children: [
               ChoiceChip(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
                 backgroundColor: Theme.of(context).colorScheme.light,
                 selectedColor: Theme.of(context).colorScheme.brightPink,
                 label: Text(
                   'btn_Daily'.tr,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: timePeriod.value == 1
                           ? Theme.of(context).colorScheme.light
                           : Theme.of(context).colorScheme.brightPink),
@@ -122,12 +128,12 @@ class QuestionnaireQuestionBox extends HookWidget {
                 },
               ),
               ChoiceChip(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
                 backgroundColor: Theme.of(context).colorScheme.light,
                 selectedColor: Theme.of(context).colorScheme.brightPink,
                 label: Text(
                   'btn_Weekly'.tr,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: timePeriod.value == 7
                           ? Theme.of(context).colorScheme.light
                           : Theme.of(context).colorScheme.brightPink),
@@ -140,12 +146,12 @@ class QuestionnaireQuestionBox extends HookWidget {
                 },
               ),
               ChoiceChip(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
                 backgroundColor: Theme.of(context).colorScheme.light,
                 selectedColor: Theme.of(context).colorScheme.brightPink,
                 label: Text(
                   'btn_Monthly'.tr,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: timePeriod.value == 30
                           ? Theme.of(context).colorScheme.light
                           : Theme.of(context).colorScheme.brightPink),
@@ -159,7 +165,7 @@ class QuestionnaireQuestionBox extends HookWidget {
               )
             ].toList(),
           ),
-          currentPage == 8
+          currentPage == 8 && allPagesFilled.value
               ? ForwardButton(
                   label: 'btn_ContinueToSummary'.tr,
                   onTap: () {

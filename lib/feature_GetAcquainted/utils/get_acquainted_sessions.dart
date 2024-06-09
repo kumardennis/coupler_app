@@ -116,15 +116,10 @@ class GetAcquaintedSessions {
         List<GetAcquaintedCurrentSession> nextTheme = (data['data'] as List)
             .map((e) => GetAcquaintedCurrentSession.fromJson(e))
             .toList();
-
-        return null;
-      } else {
-        return null;
       }
     } catch (err) {
       print('Create Theme Error');
       print(err);
-      return null;
     }
   }
 }

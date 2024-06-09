@@ -33,5 +33,6 @@ Map<String, String> getAcquaintedLocales_EN = {
   'btn_GetAcquaintedSurveyDone': 'Done',
   'lbl_PredictedScore': 'Predicted',
   'lbl_ActualScore': 'Actual',
-  'inf_ThemeAvailableNextMonday': 'Will be available next Monday!'
+  'inf_ThemeAvailableNextMonday': 'Will be available next Monday!',
+  'inf_NewThemeAvailable': 'New theme is available under "Get acquainted" tab!'
 };

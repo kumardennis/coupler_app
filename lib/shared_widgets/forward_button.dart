@@ -27,16 +27,20 @@ class ForwardButton extends GetWidget<NavigationController> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  label,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.light,
-                      fontStyle: FontStyle.italic),
+                Flexible(
+                  child: Text(
+                    label,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.light,
+                        fontStyle: FontStyle.italic),
+                  ),
                 ),
                 const SizedBox(
                   width: 10,
                 ),
-                icon ?? const FaIcon(FontAwesomeIcons.caretRight)
+                icon ??
+                    FaIcon(FontAwesomeIcons.caretRight,
+                        color: Theme.of(context).colorScheme.light)
               ],
             ),
           )),

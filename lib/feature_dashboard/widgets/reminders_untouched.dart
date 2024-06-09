@@ -23,10 +23,7 @@ class RemindersUntouched extends HookWidget {
     return Column(children: [
       Text(
         'inf_Welcome'.tr,
-        style: Theme.of(context)
-            .textTheme
-            .displayLarge
-            ?.copyWith(color: Theme.of(context).colorScheme.darkPink),
+        style: Theme.of(context).textTheme.displayLarge,
       ),
       const SizedBox(
         height: 50,

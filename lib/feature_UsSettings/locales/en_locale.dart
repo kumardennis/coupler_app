@@ -3,5 +3,6 @@ Map<String, String> usSettingsLocales_EN = {
   'lbl_NotSetYet': 'Not set yet',
   'btn_AddSpecialDate': 'Add a special date',
   'lbl_DarkMode': 'Dark mode',
-  'lbl_BlueAccent': 'Blue accent'
+  'lbl_BlueAccent': 'Blue accent',
+  'hd_OurTimeline': 'Our Timeline'
 };

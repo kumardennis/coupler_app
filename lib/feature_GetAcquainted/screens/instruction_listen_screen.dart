@@ -39,15 +39,13 @@ class InstructionListenScreen extends HookWidget {
 
     final UserSettingsController userSettingsController = Get.find();
 
-    final getAcquaintedSurveys = GetAcquaintedSurveys();
-
     ValueNotifier<bool> hasPartnerSpoken = useState(false);
 
     useEffect(() {
       Supabase.instance.client.channel('acquainted_sessions_surveys_listen').on(
           RealtimeListenTypes.postgresChanges,
           ChannelFilter(
-            event: 'UPDATE',
+            event: '*',
             schema: 'public',
             table: 'acquainted_sessions_surveys',
             filter:
@@ -56,10 +54,11 @@ class InstructionListenScreen extends HookWidget {
         var receivedId = payload['new']['id'];
         var receivedSpeakingDone = payload['new']['speakingDone'];
 
-        print(payload['new']);
+        print('${payload['new']}, ${receivedSpeakingDone}');
 
-        if (receivedId !=
-            getAcquaintedSessionSurveyController.sessionSurvey.value!.id) {
+        if (receivedSpeakingDone &&
+            receivedId !=
+                getAcquaintedSessionSurveyController.sessionSurvey.value!.id) {
           hasPartnerSpoken.value = true;
         }
       }).subscribe();

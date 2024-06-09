@@ -31,6 +31,7 @@ class QuestionnaireQuestions extends HookWidget {
     final UserSettingsController userSettingsController = Get.find();
 
     ValueNotifier<int> currentPage = useState(0);
+    ValueNotifier<bool> allPagesFilled = useState(true);
 
     final getSetReminderNeeds = GetSetReminderNeeds();
 
@@ -85,41 +86,41 @@ class QuestionnaireQuestions extends HookWidget {
                       },
                       children: [
                         QuestionnaireQuestionBox(
-                          questionText: 'qt_NiceActivities'.tr,
-                          currentPage: currentPage.value,
-                        ),
+                            questionText: 'qt_NiceActivities'.tr,
+                            currentPage: currentPage.value,
+                            allPagesFilled: allPagesFilled),
                         QuestionnaireQuestionBox(
-                          questionText: 'qt_Surprises'.tr,
-                          currentPage: currentPage.value,
-                        ),
+                            questionText: 'qt_Surprises'.tr,
+                            currentPage: currentPage.value,
+                            allPagesFilled: allPagesFilled),
                         QuestionnaireQuestionBox(
-                          questionText: 'qt_IntimateTouches'.tr,
-                          currentPage: currentPage.value,
-                        ),
+                            questionText: 'qt_IntimateTouches'.tr,
+                            currentPage: currentPage.value,
+                            allPagesFilled: allPagesFilled),
                         QuestionnaireQuestionBox(
-                          questionText: 'qt_Compliments'.tr,
-                          currentPage: currentPage.value,
-                        ),
+                            questionText: 'qt_Compliments'.tr,
+                            currentPage: currentPage.value,
+                            allPagesFilled: allPagesFilled),
                         QuestionnaireQuestionBox(
-                          questionText: 'qt_WarmMessages'.tr,
-                          currentPage: currentPage.value,
-                        ),
+                            questionText: 'qt_WarmMessages'.tr,
+                            currentPage: currentPage.value,
+                            allPagesFilled: allPagesFilled),
                         QuestionnaireQuestionBox(
-                          questionText: 'qt_DeepConvos'.tr,
-                          currentPage: currentPage.value,
-                        ),
+                            questionText: 'qt_DeepConvos'.tr,
+                            currentPage: currentPage.value,
+                            allPagesFilled: allPagesFilled),
                         QuestionnaireQuestionBox(
-                          questionText: 'qt_DiscussRelationships'.tr,
-                          currentPage: currentPage.value,
-                        ),
+                            questionText: 'qt_DiscussRelationships'.tr,
+                            currentPage: currentPage.value,
+                            allPagesFilled: allPagesFilled),
                         QuestionnaireQuestionBox(
-                          questionText: 'qt_TimeForYourself'.tr,
-                          currentPage: currentPage.value,
-                        ),
+                            questionText: 'qt_TimeForYourself'.tr,
+                            currentPage: currentPage.value,
+                            allPagesFilled: allPagesFilled),
                         QuestionnaireQuestionBox(
-                          questionText: 'qt_CaringActivities'.tr,
-                          currentPage: currentPage.value,
-                        ),
+                            questionText: 'qt_CaringActivities'.tr,
+                            currentPage: currentPage.value,
+                            allPagesFilled: allPagesFilled),
                       ],
                     ),
                   )

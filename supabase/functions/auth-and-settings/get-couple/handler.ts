@@ -37,7 +37,13 @@ export const handler = async (req: Request) => {
 
     const { data, error } = await supabase.from("couples").select(
       constants.coupleQuery,
-    ).or(`partner1_id.eq.${userId},partner2_id.eq.${userId}`);
+    ).or(`partner1_id.eq.${userId},partner2_id.eq.${userId}`).eq(
+      "isRejected",
+      false,
+    ).eq(
+      "isActive",
+      true,
+    );
 
     const responseData = {
       isRequestSuccessfull: error === null,

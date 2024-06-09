@@ -20,15 +20,33 @@ Map<String, String> remindersLocales_EN = {
   'qt_HowOftenDoYouExpect': 'How often do you expect:',
   'qt_NiceActivities':
       'To do nice activities together (dating, hiking, etc.) ?',
+  'qt_NiceActivities_Reminder':
+      'Joyful activities are the colors of our life. Have you already done fun activities with your partner?',
   'qt_Surprises': 'Suprises (Gifts, flowers, experiences, observations etc.)',
+  'qt_Surprises_Reminder':
+      'Sometimes very little is enough to make the moment... Surprise your partner!',
   'qt_IntimateTouches': 'Hugs and others intimate touches',
+  'qt_IntimateTouches_Reminder':
+      'Physical closeness builds the bond between you and your loved one. Do not forget hugs, kisses and soft touches.',
   'qt_Compliments': 'Recognition/Compliments ?',
+  'qt_Compliments_Reminder':
+      'When was the last time you opened up to your partner through appreciative messages?',
   'qt_WarmMessages': 'Heartwarming and playful messages',
+  'qt_WarmMessages_Reminder':
+      'A heartfelt message might be the best thing your partner needs right now.',
   'qt_DeepConvos': 'Deep conversations ?',
+  'qt_DeepConvos_Reminder':
+      'Deep conversations create a soul connection, dare to do it!',
   'qt_DiscussRelationships': 'Discuss "How are we doing as a couple"',
+  'qt_DiscussRelationships_Reminder':
+      'When was the last time you were open to discussing a relationship?',
   'qt_TimeForYourself': 'Time for yourself ?',
+  'qt_TimeForYourself_Reminder':
+      'An empty bag does not stand up - take time for yourself too!',
   'qt_CaringActivities':
       'Your partner to do gestures that shows caring towards you',
+  'qt_CaringActivities_Reminder':
+      'What did you do today to show your partner that you care?',
   'btn_Daily': 'Daily',
   'btn_Weekly': 'Weekly',
   'btn_Monthly': 'Monthly',

@@ -1,5 +1,6 @@
 import 'package:coupler_app/color_scheme.dart';
 import 'package:coupler_app/feature_Reminders/utils/getSetReminderSurvey.dart';
+import 'package:coupler_app/services/notification_service.dart';
 import 'package:coupler_app/shared_widgets/background.dart';
 import 'package:coupler_app/shared_widgets/bubble_container.dart';
 import 'package:coupler_app/shared_widgets/bulb_tip.dart';
@@ -14,7 +15,6 @@ import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../feature_Auth/getx_controllers/couple_controller.dart';
-import '../../feature_Navigation/getxControllers/navigation_controller.dart';
 import '../../feature_UsSettings/getXControllers/user_settings_controller.dart';
 import '../../shared_widgets/forward_button.dart';
 import '../getxControllers/ReminderNavigationController.dart';
@@ -41,6 +41,8 @@ class RemindersSummary extends HookWidget {
 
     final ValueNotifier<List<ChartData>> chartData = useState([]);
 
+    final notificationService = NotificationService();
+
     useEffect(() {
       Future<void> getSurveyScores() async {
         List<CoupleReminderSurvey>? scores1 =
@@ -64,7 +66,7 @@ class RemindersSummary extends HookWidget {
               .format(DateTime.parse(scores1[index].created_at));
 
           allData.add(ChartData(scores1[index].created_at,
-              scores1[index].score as double?, null));
+              scores1[index].score.toDouble(), null));
         }
 
         for (var index = 0; index < scores2!.length; index++) {
@@ -81,19 +83,24 @@ class RemindersSummary extends HookWidget {
           /* If yes, get scores related to that date for both parters */
 
           if (bothPartnersHaveCommonDate) {
-            allData[date2].y2 = scores2[index].score as double?;
+            if (date2 >= 0 && date2 < allData.length) {
+              allData[date2].y2 = scores2[index].score.toDouble();
+            } else {
+              allData[date2] = ChartData(allData[date2].x, 0.0, 0.0);
+            }
           } else {
             /* If no, add seperate dates and scores */
 
             allData.add(ChartData(
               scores2[index].created_at,
               null,
-              scores2[index].score as double?,
+              scores2[index].score.toDouble(),
             ));
           }
         }
 
         /* Sort data by date */
+
         allData.sort((ChartData a, ChartData b) => a.x.compareTo(b.x));
 
         chartData.value = allData;
@@ -106,11 +113,38 @@ class RemindersSummary extends HookWidget {
       Future<void> getNeeds() async {
         List<CoupleReminderNeeds>? need =
             await getSetReminderNeeds.getAverageReminderNeeds();
-        coupleReminderNeeds.value = need!;
+
+        if (need != null) {
+          coupleReminderNeeds.value = need!;
+        }
       }
 
       getNeeds();
     }, []);
+
+    useEffect(() {
+      Future getNotificationsAndSetNewOnes() async {
+        // final pendingNotifications =
+        //     await notificationService.getPendingNotifications();
+
+        // print(
+        //     '${pendingNotifications.isEmpty} && ${coupleReminderNeeds.value.isNotEmpty}');
+
+        if (coupleReminderNeeds.value.isNotEmpty) {
+          for (var need in coupleReminderNeeds.value) {
+            await notificationService.scheduleNotifications(
+                // 24 * 10,
+                // 1,
+                need.frequency,
+                need.timePeriodInDays,
+                'Reminder :)',
+                '${need.reminderNeeds.reminderText}_Reminder'.tr);
+          }
+        }
+      }
+
+      getNotificationsAndSetNewOnes();
+    }, [coupleReminderNeeds.value]);
 
     return (Scaffold(
       appBar: CustomAppbar(
@@ -133,6 +167,8 @@ class RemindersSummary extends HookWidget {
               child: Column(
                 children: [
                   BubbleContainer(
+                      imageUrl:
+                          'assets/images/first_survey_unsplash_trent_bradley.jpg',
                       icon: FaIcon(
                         FontAwesomeIcons.quoteLeft,
                         color: Theme.of(context).colorScheme.light,
@@ -143,7 +179,7 @@ class RemindersSummary extends HookWidget {
                             style: GoogleFonts.merienda(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
-                                color: Theme.of(context).colorScheme.dark)),
+                                color: Theme.of(context).colorScheme.light)),
                         Align(
                           alignment: Alignment.centerRight,
                           child: Text(
@@ -152,7 +188,7 @@ class RemindersSummary extends HookWidget {
                                 .textTheme
                                 .bodySmall
                                 ?.copyWith(
-                                    color: Theme.of(context).colorScheme.dark),
+                                    color: Theme.of(context).colorScheme.light),
                           ),
                         )
                       ]),
@@ -162,27 +198,30 @@ class RemindersSummary extends HookWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                          child: SfCartesianChart(
-                        primaryXAxis: CategoryAxis(
-                            labelRotation: 45,
-                            arrangeByIndex: true,
-                            isVisible: false),
-                        series: <CartesianSeries>[
-                          LineSeries<ChartData, String>(
-                              dataSource: chartData.value,
-                              xValueMapper: (ChartData data, _) =>
-                                  DateFormat('MMM dd, yy')
-                                      .format(DateTime.parse(data.x)),
-                              yValueMapper: (data, _) => data.y1),
-                          LineSeries<ChartData, String>(
-                              dataSource: chartData.value,
-                              xValueMapper: (ChartData data, _) =>
-                                  DateFormat('MMM dd, yy')
-                                      .format(DateTime.parse(data.x)),
-                              yValueMapper: (data, _) => data.y2),
-                        ],
-                      )),
+                      chartData.value.isEmpty
+                          ? const SizedBox()
+                          : SfCartesianChart(
+                              primaryXAxis: const CategoryAxis(
+                                  labelRotation: 45,
+                                  arrangeByIndex: true,
+                                  isVisible: false),
+                              series: <CartesianSeries>[
+                                LineSeries<ChartData, String>(
+                                    dataSource: chartData.value.toList(),
+                                    xValueMapper: (ChartData data, _) =>
+                                        DateFormat('MMM dd, yy')
+                                            .format(DateTime.parse(data.x)),
+                                    yValueMapper: (ChartData data, _) =>
+                                        data.y1),
+                                LineSeries<ChartData, String>(
+                                    dataSource: chartData.value.toList(),
+                                    xValueMapper: (ChartData data, _) =>
+                                        DateFormat('MMM dd, yy')
+                                            .format(DateTime.parse(data.x)),
+                                    yValueMapper: (ChartData data, _) =>
+                                        data.y2),
+                              ],
+                            ),
                     ],
                   ),
                   const SizedBox(
@@ -199,15 +238,20 @@ class RemindersSummary extends HookWidget {
                   const SizedBox(
                     height: 50,
                   ),
-                  BubbleContainer(position: 'MIDDLE', children: [
-                    Text(
-                      'inf_ReminderSummary'.tr,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(color: Theme.of(context).colorScheme.dark),
-                    ),
-                  ]),
+                  BubbleContainer(
+                      imageUrl:
+                          'assets/images/recommend_unsplash_lucas_blazek.jpg',
+                      position: 'MIDDLE',
+                      children: [
+                        Text(
+                          'inf_ReminderSummary'.tr,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(
+                                  color: Theme.of(context).colorScheme.light),
+                        ),
+                      ]),
                   const SizedBox(
                     height: 50,
                   ),
@@ -240,4 +284,11 @@ class RemindersSummary extends HookWidget {
       ),
     ));
   }
+}
+
+class SalesData {
+  SalesData(this.year, this.sales, this.sales2);
+  final String year;
+  final double? sales;
+  final double? sales2;
 }

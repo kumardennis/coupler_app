@@ -69,6 +69,33 @@ class UsSettingsHelper {
     }
   }
 
+  Future<void> updateAnniversary(date) async {
+    try {
+      final response = await Supabase.instance.client.functions
+          .invoke('auth-and-settings/update-couple-anniversary', headers: {
+        'Authorization': 'Bearer ${userController.user.value.accessToken}'
+      }, body: {
+        "coupleId": coupleController.couple.value.id,
+        "anniversary": DateFormat('yyyy-MM-dd').format(date)
+      });
+
+      final data = await response.data;
+
+      if (data['isRequestSuccessfull'] == true) {
+        List<SpecialDates> dates = (data['data'] as List)
+            .map((e) => SpecialDates.fromJson(e))
+            .toList();
+
+        print(dates);
+      } else {
+        Get.snackbar('Oops..', data['error'].toString());
+      }
+    } catch (err) {
+      debugPrint(err.toString());
+      Get.snackbar('Oops..', err.toString());
+    }
+  }
+
   Future<void> setAppearanceSettings(darkMode, blueAccent) async {
     try {
       final response = await Supabase.instance.client.functions

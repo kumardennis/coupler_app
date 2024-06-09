@@ -21,12 +21,13 @@ export const handler = async (req: Request) => {
   const supabase = createSupabase(req);
 
   try {
-    const { userId } = await req
+    const { userId, partnerShareableUuid } = await req
       .json();
 
     if (
       !confirmedRequiredParams([
         userId,
+        partnerShareableUuid,
       ])
     ) {
       return new Response(JSON.stringify(errorResponseData), {
@@ -34,10 +35,47 @@ export const handler = async (req: Request) => {
       });
     }
 
+    const { data: partnerData, error: partnerError } = await supabase.from(
+      "users",
+    ).select("id").match({ shareableUuid: partnerShareableUuid });
+
+    if (partnerData === null || partnerData?.length === 0) {
+      const responseData = {
+        isRequestSuccessful: false,
+        data: null,
+        error: "User not found",
+      };
+
+      return new Response(JSON.stringify(responseData), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const partnerId = partnerData[0].id;
+
+    const { data: coupleData, error: coupleError } = await supabase.from(
+      "couples",
+    ).select("id").or(
+      `partner1_id.eq.${partnerId},partner2_id.eq.${partnerId}`,
+    );
+
+    if (coupleData !== null && coupleData?.length > 0) {
+      const responseData = {
+        isRequestSuccessful: false,
+        data: null,
+        error: "Already committed :(",
+      };
+
+      return new Response(JSON.stringify(responseData), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { data, error } = await supabase.from("couples").insert({
       partner1_id: userId,
-      partner2_id: null,
+      partner2_id: partnerId,
       anniversary: null,
+      initiatedById: userId,
     }).select();
 
     const responseData = {

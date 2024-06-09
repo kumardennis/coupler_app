@@ -1,20 +1,14 @@
 import 'package:coupler_app/color_scheme.dart';
 import 'package:coupler_app/feature_Auth/getx_controllers/couple_controller.dart';
 import 'package:coupler_app/feature_Auth/getx_controllers/user_controller.dart';
-import 'package:coupler_app/feature_Auth/screens/sign_in.dart';
-import 'package:coupler_app/feature_GetAcquainted/getxControllers/GetAcquaintedNavigationController.dart';
-import 'package:coupler_app/feature_GetAcquainted/models/get-acquainted-current-session.dart';
-import 'package:coupler_app/feature_GetAcquainted/models/get_acquainted_previous_sessions.dart';
-import 'package:coupler_app/feature_GetAcquainted/models/get_acquainted_session_survey.dart';
+
 import 'package:coupler_app/feature_UsSettings/getXControllers/user_settings_controller.dart';
+import 'package:coupler_app/feature_UsSettings/widgets/update_anniversary_popup.dart';
 import 'package:coupler_app/shared_widgets/background.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import 'package:coupler_app/feature_GetAcquainted/utils/get_acquainted_sessions.dart';
-import 'package:coupler_app/feature_UsSettings/models/special_dates.dart';
-import 'package:coupler_app/shared_widgets/bubble_container.dart';
-import 'package:coupler_app/shared_widgets/bulb_tip.dart';
+
 import 'package:coupler_app/shared_widgets/custom_appbar.dart';
 import 'package:coupler_app/shared_widgets/forward_button.dart';
+import 'package:easy_loader/easy_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -44,13 +38,8 @@ class UsSettings extends HookWidget {
 
     final _supabase = SupabaseAuthManger();
 
-    ValueNotifier<double> currentSliderValue = useState(0);
-    ValueNotifier<List<SpecialDates>> specialDates = useState([]);
-
     ValueNotifier<bool> darkMode = useState(false);
     ValueNotifier<bool> blueAccent = useState(false);
-
-    double sliderWidth = MediaQuery.of(context).size.width - 100;
 
     ValueNotifier<bool> isLoading = useState(false);
 
@@ -59,24 +48,19 @@ class UsSettings extends HookWidget {
     Future<void> getDates() async {
       darkMode.value = userSettingsController.user.value.darkMode;
       blueAccent.value = userSettingsController.user.value.blueAccent;
-
-      var response = await usSettingsHelper.getSpecialDates();
-
-      specialDates.value = response;
     }
 
     Future<void> changeDarkMode(value) async {
-      var response =
-          await usSettingsHelper.setAppearanceSettings(value, blueAccent.value);
+      isLoading.value = true;
+      await usSettingsHelper.setAppearanceSettings(value, false);
 
       _supabase.getUserSettings(
           userController.user.value.id, userController.user.value.accessToken);
+
+      isLoading.value = false;
     }
 
     Future<void> changeBlueAccent(value) async {
-      var response =
-          await usSettingsHelper.setAppearanceSettings(darkMode.value, value);
-
       _supabase.getUserSettings(
           userController.user.value.id, userController.user.value.accessToken);
     }
@@ -109,7 +93,7 @@ class UsSettings extends HookWidget {
                   children: [
                     Container(
                       width: MediaQuery.of(context).size.width,
-                      height: 200,
+                      height: 100,
                       decoration: const BoxDecoration(
                           image: DecorationImage(
                               fit: BoxFit.cover,
@@ -117,7 +101,7 @@ class UsSettings extends HookWidget {
                                   'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YWJzdHJhY3R8ZW58MHx8MHx8fDA%3D&w=1000&q=80'))),
                     ),
                     Positioned(
-                      top: 120,
+                      top: 20,
                       width: MediaQuery.of(context).size.width,
                       child: Padding(
                         padding: const EdgeInsets.only(
@@ -131,14 +115,17 @@ class UsSettings extends HookWidget {
                                   UserAvatar(
                                     size: 60,
                                     imageUrl: coupleController
-                                        .couple.value.partner1!.profileImage,
+                                        .couple.value.partner1?.profileImage,
                                   ),
                                   const SizedBox(
                                     width: 10,
                                   ),
                                   Text(
-                                    coupleController
-                                        .couple.value.partner1!.name,
+                                    coupleController.couple.value.partner1 !=
+                                            null
+                                        ? coupleController
+                                            .couple.value.partner1!.name
+                                        : '',
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall,
@@ -150,14 +137,15 @@ class UsSettings extends HookWidget {
                                   UserAvatar(
                                     size: 60,
                                     imageUrl: coupleController
-                                        .couple.value.partner2!.profileImage,
+                                        .couple.value.partner2?.profileImage,
                                   ),
                                   const SizedBox(
                                     width: 10,
                                   ),
                                   Text(
                                     coupleController
-                                        .couple.value.partner2!.name,
+                                            .couple.value.partner2?.name ??
+                                        '',
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall,
@@ -176,18 +164,33 @@ class UsSettings extends HookWidget {
                 ),
                 Container(
                   child: Column(children: [
-                    Text(
-                      coupleController.couple.value.anniversary != null
-                          ? DateFormat('EEE, dd MMM - yyyy').format(
-                              DateTime.parse(
-                                  coupleController.couple.value.anniversary ??
-                                      ''))
-                          : 'lbl_NotSetYet'.tr,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineMedium
-                          ?.copyWith(fontWeight: FontWeight.w600),
-                    ),
+                    coupleController.couple.value.anniversary != null
+                        ? Text(
+                            DateFormat('EEE, dd MMM - yyyy').format(
+                                DateTime.parse(
+                                    coupleController.couple.value.anniversary ??
+                                        '')),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          )
+                        : GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    UpdateAnniversaryPopup(
+                                        getAnniversary: getDates),
+                              );
+                            },
+                            child: Text(
+                              'lbl_NotSetYet'.tr,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium
+                                  ?.copyWith(fontWeight: FontWeight.w600),
+                            )),
                     Text(
                       'lbl_Anniversary'.tr,
                       style: Theme.of(context).textTheme.headlineSmall,
@@ -206,36 +209,19 @@ class UsSettings extends HookWidget {
                           AddDatePopup(getDates: getDates),
                     );
                   },
-                  icon: FaIcon(FontAwesomeIcons.heartCirclePlus),
+                  icon: FaIcon(
+                    FontAwesomeIcons.heartCirclePlus,
+                    color: Theme.of(context).colorScheme.light,
+                  ),
                 ),
                 const SizedBox(
                   height: 15,
                 ),
-                Column(
-                    children: specialDates.value
-                        .map((date) => Container(
-                              child: Column(children: [
-                                Text(
-                                  DateFormat('EEE, dd MMM - yyyy')
-                                      .format(DateTime.parse(date.date)),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineMedium
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                ),
-                                Text(
-                                  date.dateDescription,
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                )
-                              ]),
-                            ))
-                        .toList()),
+                ForwardButton(
+                    label: 'See your timeline',
+                    onTap: () {
+                      Get.toNamed('/us-timeline');
+                    }),
                 const SizedBox(
                   height: 30,
                 ),
@@ -259,24 +245,27 @@ class UsSettings extends HookWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text('lbl_BlueAccent'.tr,
-                        style: Theme.of(context).textTheme.headlineMedium),
-                    Obx(
-                      () => Switch(
-                          value: userSettingsController.user.value.blueAccent,
-                          onChanged: (value) {
-                            changeBlueAccent(value);
-                          }),
-                    ),
-                  ],
-                )
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   crossAxisAlignment: CrossAxisAlignment.center,
+                //   children: [
+                //     Text('lbl_BlueAccent'.tr,
+                //         style: Theme.of(context).textTheme.headlineMedium),
+                //     Obx(
+                //       () => Switch(
+                //           value: userSettingsController.user.value.blueAccent,
+                //           onChanged: (value) {
+                //             changeBlueAccent(value);
+                //           }),
+                //     ),
+                //   ],
+                // )
               ],
             ),
           ),
+          isLoading.value
+              ? const EasyLoader(image: AssetImage('assets/images/logo.png'))
+              : const SizedBox(),
         ],
       ),
     ));

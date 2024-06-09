@@ -45,10 +45,6 @@ class GetAcquaintedHomeScreen extends HookWidget {
     final GetAcquaintedSessionController getAcquaintedSessionController =
         Get.put(GetAcquaintedSessionController());
 
-    ValueNotifier<double> currentSliderValue = useState(0);
-
-    double sliderWidth = MediaQuery.of(context).size.width - 100;
-
     ValueNotifier<List<GetAcquaintedPreviousSessions>> previousSessions =
         useState<List<GetAcquaintedPreviousSessions>>([]);
 
@@ -69,8 +65,8 @@ class GetAcquaintedHomeScreen extends HookWidget {
         for (var session in sessions) {
           var data = ChartData(
               session.acquaintedSessions.createdAt,
-              session.acquaintedSurveys1.score as double?,
-              session.acquaintedSurveys2.score as double?);
+              session.acquaintedSurveys1.score?.toDouble(),
+              session.acquaintedSurveys2.score?.toDouble());
 
           allData.add(data);
         }
@@ -80,6 +76,7 @@ class GetAcquaintedHomeScreen extends HookWidget {
       }
 
       getSessions();
+      return null;
     }, []);
 
     useEffect(() {
@@ -138,270 +135,347 @@ class GetAcquaintedHomeScreen extends HookWidget {
         children: [
           Background(),
           SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  right: 20.0, left: 20.0, top: 50.0, bottom: 30.0),
-              child: Column(children: [
-                BubbleContainer(
-                    icon: FaIcon(
-                      FontAwesomeIcons.faceKissWinkHeart,
-                      color: Theme.of(context).colorScheme.light,
-                    ),
-                    position: 'START',
-                    children: [
-                      Text(
-                        'inf_GetAcquainted'.tr,
-                        style: GoogleFonts.merienda(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.dark),
-                      ),
-                    ]),
-                const SizedBox(
-                  height: 30.0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Text(
-                    nextTheme.value != null
-                        ? nextTheme.value!.acquaintedQuestions.question
-                        : 'loading...',
-                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                isLoading.value
-                    ? CircularProgressIndicator()
-                    : DateTime.parse(nextTheme.value!.availableSince)
-                                .millisecondsSinceEpoch >
-                            DateTime.now().millisecondsSinceEpoch
-                        ? ForwardButton(
-                            label: 'inf_ThemeAvailableNextMonday'.tr,
-                            onTap: () {},
-                          )
-                        : ForwardButton(
-                            label: nextTheme.value != null &&
-                                    nextTheme.value!.hasStarted
-                                ? 'btn_ContinueSession'.tr
-                                : 'btn_StartSession'.tr,
-                            onTap: () async {
-                              await startSession();
-                            },
+            child: nextTheme.value == null
+                ? Text('SHouldnt be null')
+                : Padding(
+                    padding: const EdgeInsets.only(
+                        right: 20.0, left: 20.0, top: 50.0, bottom: 30.0),
+                    child: Column(children: [
+                      BubbleContainer(
+                          imageUrl:
+                              'assets/images/get_acquainted_unsplash_brooklyn.jpg',
+                          icon: FaIcon(
+                            FontAwesomeIcons.faceKissWinkHeart,
+                            color: Theme.of(context).colorScheme.light,
                           ),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Container(
-                      child: SfCartesianChart(
-                    primaryXAxis: CategoryAxis(
-                        labelRotation: 45,
-                        arrangeByIndex: true,
-                        isVisible: false),
-                    series: <CartesianSeries>[
-                      LineSeries<ChartData, String>(
-                          dataSource: chartData.value,
-                          xValueMapper: (ChartData data, _) =>
-                              DateFormat('MMM dd, yy')
-                                  .format(DateTime.parse(data.x)),
-                          yValueMapper: (data, _) => data.y1),
-                      LineSeries<ChartData, String>(
-                          dataSource: chartData.value,
-                          xValueMapper: (ChartData data, _) =>
-                              DateFormat('MMM dd, yy')
-                                  .format(DateTime.parse(data.x)),
-                          yValueMapper: (data, _) => data.y2),
-                    ],
-                  )),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Text(
-                    'lbl_PreviousThemes'.tr,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
+                          position: 'START',
+                          children: [
+                            Text(
+                              'inf_GetAcquainted'.tr,
+                              style: GoogleFonts.merienda(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).colorScheme.light),
+                            ),
+                          ]),
+                      const SizedBox(
+                        height: 30.0,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          nextTheme.value?.acquaintedQuestions?.question ??
+                              'loading..',
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayLarge
+                              ?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                          textAlign: TextAlign.center,
                         ),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-                Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: previousSessions.value.isEmpty
-                        ? Text('loading...')
-                        : Column(
-                            children: previousSessions.value
-                                .map((session) => Column(
-                                      children: [
-                                        Text(
-                                          session.acquaintedSessions
-                                              .acquaintedQuestions.question,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headlineSmall
-                                              ?.copyWith(
-                                                fontWeight: FontWeight.w600,
+                      ),
+                      isLoading.value
+                          ? CircularProgressIndicator()
+                          : DateTime.parse(nextTheme.value!.availableSince)
+                                      .millisecondsSinceEpoch >
+                                  DateTime.now().millisecondsSinceEpoch
+                              ? ForwardButton(
+                                  label: 'inf_ThemeAvailableNextMonday'.tr,
+                                  onTap: () {},
+                                )
+                              : ForwardButton(
+                                  label: nextTheme.value?.hasStarted != null &&
+                                          nextTheme.value!.hasStarted
+                                      ? 'btn_ContinueSession'.tr
+                                      : 'btn_StartSession'.tr,
+                                  onTap: () async {
+                                    await startSession();
+                                  },
+                                ),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Container(
+                            child: SfCartesianChart(
+                          primaryXAxis: CategoryAxis(
+                              labelRotation: 45,
+                              arrangeByIndex: true,
+                              isVisible: false),
+                          series: <CartesianSeries>[
+                            LineSeries<ChartData, String>(
+                                dataSource: chartData.value,
+                                xValueMapper: (ChartData data, _) =>
+                                    DateFormat('MMM dd, yy')
+                                        .format(DateTime.parse(data.x)),
+                                yValueMapper: (data, _) => data.y1),
+                            LineSeries<ChartData, String>(
+                                dataSource: chartData.value,
+                                xValueMapper: (ChartData data, _) =>
+                                    DateFormat('MMM dd, yy')
+                                        .format(DateTime.parse(data.x)),
+                                yValueMapper: (data, _) => data.y2),
+                          ],
+                        )),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          'lbl_PreviousThemes'.tr,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: previousSessions.value.isEmpty
+                              ? Text('no themes...')
+                              : Column(
+                                  children: previousSessions.value
+                                      .map((session) => Column(
+                                            children: [
+                                              Text(
+                                                session
+                                                    .acquaintedSessions
+                                                    .acquaintedQuestions
+                                                    .question,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headlineSmall
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
                                               ),
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Column(
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    UserAvatar(
-                                                      imageUrl: session
-                                                          .acquaintedSurveys1
-                                                          .users
-                                                          .profileImage,
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Text(session
-                                                        .acquaintedSurveys1
-                                                        .users
-                                                        .firstName)
-                                                  ],
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Column(
-                                                      children: [
-                                                        Text(
-                                                          session
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          UserAvatar(
+                                                            imageUrl: session
+                                                                .acquaintedSurveys1
+                                                                .users
+                                                                .profileImage,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text(session
                                                               .acquaintedSurveys1
-                                                              .predictedScore
-                                                              .toString(),
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .headlineSmall
-                                                                  ?.copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                  ),
-                                                        ),
-                                                        Text(
-                                                            'lbl_PredictedScore'
-                                                                .tr)
-                                                      ],
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 30,
-                                                    ),
-                                                    Column(
-                                                      children: [
-                                                        Text(
-                                                          session
+                                                              .users
+                                                              .firstName)
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text(
+                                                                session
+                                                                    .acquaintedSurveys1
+                                                                    .predictedScore
+                                                                    .toString(),
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .headlineSmall
+                                                                    ?.copyWith(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                    ),
+                                                              ),
+                                                              Text(
+                                                                  'lbl_PredictedScore'
+                                                                      .tr)
+                                                            ],
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 30,
+                                                          ),
+                                                          Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text(
+                                                                session
+                                                                    .acquaintedSurveys2
+                                                                    .score
+                                                                    .toString(),
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .headlineSmall
+                                                                    ?.copyWith(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w600,
+                                                                        color: Theme.of(context)
+                                                                            .colorScheme
+                                                                            .brightPink),
+                                                              ),
+                                                              Text(
+                                                                  'lbl_ActualScore'
+                                                                      .tr)
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          UserAvatar(
+                                                            imageUrl: session
+                                                                .acquaintedSurveys2
+                                                                .users
+                                                                .profileImage,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text(session
                                                               .acquaintedSurveys2
-                                                              .score
-                                                              .toString(),
-                                                          style: Theme.of(
-                                                                  context)
-                                                              .textTheme
-                                                              .headlineSmall
-                                                              ?.copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .colorScheme
-                                                                      .brightPink),
-                                                        ),
-                                                        Text('lbl_ActualScore'
-                                                            .tr)
-                                                      ],
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                            Column(
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    UserAvatar(
-                                                      imageUrl: session
-                                                          .acquaintedSurveys2
-                                                          .users
-                                                          .profileImage,
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Text(session
-                                                        .acquaintedSurveys2
-                                                        .users
-                                                        .firstName)
-                                                  ],
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Column(
-                                                      children: [
-                                                        Text(
-                                                          session
-                                                              .acquaintedSurveys2
-                                                              .predictedScore
-                                                              .toString(),
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .headlineSmall
-                                                                  ?.copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                  ),
-                                                        ),
-                                                        Text(
-                                                            'lbl_PredictedScore'
-                                                                .tr)
-                                                      ],
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 30,
-                                                    ),
-                                                    Column(
-                                                      children: [
-                                                        Text(
-                                                          session
-                                                              .acquaintedSurveys1
-                                                              .score
-                                                              .toString(),
-                                                          style: Theme.of(
-                                                                  context)
-                                                              .textTheme
-                                                              .headlineSmall
-                                                              ?.copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .colorScheme
-                                                                      .brightPink),
-                                                        ),
-                                                        Text('lbl_ActualScore'
-                                                            .tr)
-                                                      ],
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    ))
-                                .toList(),
-                          )),
-              ]),
-            ),
+                                                              .users
+                                                              .firstName)
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text(
+                                                                session
+                                                                    .acquaintedSurveys2
+                                                                    .predictedScore
+                                                                    .toString(),
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .headlineSmall
+                                                                    ?.copyWith(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                    ),
+                                                              ),
+                                                              Text(
+                                                                  'lbl_PredictedScore'
+                                                                      .tr)
+                                                            ],
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 30,
+                                                          ),
+                                                          Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text(
+                                                                session
+                                                                    .acquaintedSurveys1
+                                                                    .score
+                                                                    .toString(),
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .headlineSmall
+                                                                    ?.copyWith(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w600,
+                                                                        color: Theme.of(context)
+                                                                            .colorScheme
+                                                                            .brightPink),
+                                                              ),
+                                                              Text(
+                                                                  'lbl_ActualScore'
+                                                                      .tr)
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ))
+                                      .toList(),
+                                )),
+                    ]),
+                  ),
           ),
         ],
       ),

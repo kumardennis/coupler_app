@@ -38,6 +38,7 @@ class GetSetReminderNeeds {
     } catch (err) {
       debugPrint(err.toString());
     }
+    return null;
   }
 
   Future<void> setReminderNeeds(reminderNeedId, frequency, timePeriod) async {
@@ -146,5 +147,6 @@ class GetSetReminderNeeds {
     } catch (err) {
       debugPrint(err.toString());
     }
+    return null;
   }
 }

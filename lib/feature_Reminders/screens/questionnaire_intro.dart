@@ -44,6 +44,8 @@ class QuestionnaireIntro extends HookWidget {
               child: Column(
                 children: [
                   BubbleContainer(
+                      imageUrl:
+                          'assets/images/first_survey_unsplash_trent_bradley.jpg',
                       icon: FaIcon(
                         FontAwesomeIcons.gear,
                         color: Theme.of(context).colorScheme.light,
@@ -52,7 +54,11 @@ class QuestionnaireIntro extends HookWidget {
                       children: [
                         Text(
                           'inf_QuestionnaireFirstGear'.tr,
-                          style: Theme.of(context).textTheme.headlineLarge,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineLarge
+                              ?.copyWith(
+                                  color: Theme.of(context).colorScheme.light),
                           textAlign: TextAlign.center,
                         ),
                       ]),
@@ -62,7 +68,10 @@ class QuestionnaireIntro extends HookWidget {
                   BubbleContainer(position: 'END', children: [
                     Text(
                       'lbl_QuestionnaireYourNeedsPart1'.tr,
-                      style: Theme.of(context).textTheme.headlineMedium,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium
+                          ?.copyWith(color: Theme.of(context).colorScheme.dark),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(
@@ -73,7 +82,9 @@ class QuestionnaireIntro extends HookWidget {
                       style: Theme.of(context)
                           .textTheme
                           .headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.w500),
+                          ?.copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: Theme.of(context).colorScheme.dark),
                       textAlign: TextAlign.center,
                     ),
                   ]),

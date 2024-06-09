@@ -43,9 +43,9 @@ class QuestionnaireSummaryBox extends HookWidget {
                         ? 'lbl_Twice'.tr
                         : 'lbl_FrequencyTimes'
                             .trParams({'count': frequency.toString()}),
-                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                style: Theme.of(context).textTheme.displayMedium?.copyWith(
                     color: Theme.of(context).colorScheme.brightPink,
-                    fontWeight: FontWeight.w500),
+                    fontWeight: FontWeight.w600),
               ),
               const SizedBox(
                 width: 10,
@@ -56,9 +56,9 @@ class QuestionnaireSummaryBox extends HookWidget {
                       : timePeriod == 7
                           ? 'lbl_InAWeek'.tr
                           : 'lbl_InAMonth'.tr,
-                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
                       color: Theme.of(context).colorScheme.brightPink,
-                      fontWeight: FontWeight.w500)),
+                      fontWeight: FontWeight.w600)),
             ],
           ),
           const SizedBox(
@@ -71,9 +71,9 @@ class QuestionnaireSummaryBox extends HookWidget {
                 questionText,
                 style: Theme.of(context)
                     .textTheme
-                    .bodyMedium
+                    .displayLarge
                     ?.copyWith(color: Theme.of(context).colorScheme.dark),
-                textAlign: TextAlign.end,
+                textAlign: TextAlign.start,
               ),
             ],
           ),

@@ -4,29 +4,21 @@ import {
   serve,
 } from "https://deno.land/std@0.168.0/http/server.ts";
 import { corsHeaders } from "../_shared/cors.ts";
+import { handler as create_reminder_survey_score } from "./create-reminder-survey-score/handler.ts";
+import { handler as get_reminder_survey_scores } from "./get-reminder-survey-scores/handler.ts";
+import { handler as get_reminder_couple_needs } from "./get-reminder-couple-needs/handler.ts";
+import { handler as upsert_reminder_survey_score } from "./upsert-reminder-couple-needs/handler.ts";
 
 console.log("Setting up localdev");
 
 const handlers = {
-  "create-reminder-survey-score": await import(
-    "./create-reminder-survey-score/handler.ts"
-  )
-    .then((it) => it.handler),
+  "create-reminder-survey-score": create_reminder_survey_score,
 
-  "get-reminder-survey-scores": await import(
-    "./get-reminder-survey-scores/handler.ts"
-  )
-    .then((it) => it.handler),
+  "get-reminder-survey-scores": get_reminder_survey_scores,
 
-  "get-reminder-couple-needs": await import(
-    "./get-reminder-couple-needs/handler.ts"
-  )
-    .then((it) => it.handler),
+  "get-reminder-couple-needs": get_reminder_couple_needs,
 
-  "upsert-reminder-couple-needs": await import(
-    "./upsert-reminder-couple-needs/handler.ts"
-  )
-    .then((it) => it.handler),
+  "upsert-reminder-couple-needs": upsert_reminder_survey_score,
 } as Record<string, Handler>;
 
 function localdevHandler(req: Request, connInfo: ConnInfo) {

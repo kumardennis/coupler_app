@@ -7,6 +7,7 @@ import 'package:coupler_app/shared_widgets/bubble_container.dart';
 import 'package:coupler_app/shared_widgets/bulb_tip.dart';
 import 'package:coupler_app/shared_widgets/custom_appbar.dart';
 import 'package:coupler_app/shared_widgets/forward_button.dart';
+import 'package:easy_loader/easy_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -43,6 +44,7 @@ class InstructionRespondScreen extends HookWidget {
 
     ValueNotifier<bool> hasPartnerSpoken = useState(false);
     ValueNotifier<bool> hasSessionEnded = useState(false);
+    ValueNotifier<bool> isLoading = useState(false);
 
     useEffect(() {
       if (getAcquaintedSessionSurveyController.sessionSurvey.value != null) {
@@ -51,7 +53,7 @@ class InstructionRespondScreen extends HookWidget {
             .on(
                 RealtimeListenTypes.postgresChanges,
                 ChannelFilter(
-                  event: 'UPDATE',
+                  event: '*',
                   schema: 'public',
                   table: 'acquainted_sessions_surveys',
                   filter:
@@ -60,8 +62,10 @@ class InstructionRespondScreen extends HookWidget {
           var receivedId = payload['new']['id'];
           var receivedAssessingDone = payload['new']['assessingDone'];
 
-          if (receivedId !=
-              getAcquaintedSessionSurveyController.sessionSurvey.value!.id) {
+          if (receivedAssessingDone &&
+              receivedId !=
+                  getAcquaintedSessionSurveyController
+                      .sessionSurvey.value!.id) {
             hasPartnerSpoken.value = true;
           }
         }).subscribe();
@@ -72,17 +76,22 @@ class InstructionRespondScreen extends HookWidget {
 
     useEffect(() {
       void changeScreen() async {
+        isLoading.value = true;
         SchedulerBinding.instance.addPostFrameCallback((_) {
           if (getAcquaintedSessionSurveyController
               .sessionSurvey.value!.willMeStart) {
-            Future.delayed(const Duration(milliseconds: 2000), () {
+            Future.delayed(const Duration(milliseconds: 1000), () {
               getAcquaintedController
                   .changeReminderRoute(GetAcquaintedRoutes.homeScreen);
             });
           } else {
-            getAcquaintedController
-                .changeReminderRoute(GetAcquaintedRoutes.instructionSpeak);
+            Future.delayed(const Duration(milliseconds: 1000), () {
+              getAcquaintedController
+                  .changeReminderRoute(GetAcquaintedRoutes.instructionSpeak);
+            });
           }
+
+          isLoading.value = false;
         });
       }
 
@@ -157,6 +166,9 @@ class InstructionRespondScreen extends HookWidget {
               ]),
             ),
           ),
+          isLoading.value
+              ? const EasyLoader(image: AssetImage('assets/images/logo.png'))
+              : const SizedBox(),
         ],
       ),
     ));

@@ -36,7 +36,7 @@ export const handler = async (req: Request) => {
     }
 
     const { data, error } = await supabase.from("couples").update({
-      partner2_id: userId,
+      isAccepted: true,
     }).eq("id", coupleId).select();
 
     const responseData = {

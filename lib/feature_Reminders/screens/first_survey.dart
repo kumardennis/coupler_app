@@ -1,4 +1,5 @@
 import 'package:coupler_app/color_scheme.dart';
+import 'package:coupler_app/shared_widgets/background.dart';
 import 'package:coupler_app/shared_widgets/bubble_container.dart';
 import 'package:coupler_app/shared_widgets/bulb_tip.dart';
 import 'package:coupler_app/shared_widgets/custom_appbar.dart';
@@ -10,6 +11,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../feature_UsSettings/getXControllers/user_settings_controller.dart';
 import '../getxControllers/ReminderNavigationController.dart';
 import '../utils/getSetReminderSurvey.dart';
 
@@ -22,6 +24,8 @@ class FirstSurvey extends HookWidget {
 
     final getSetReminderSurvey = GetSetReminderSurvey();
 
+    final UserSettingsController userSettingsController = Get.find();
+
     ValueNotifier<double> currentSliderValue = useState(0);
 
     double sliderWidth = MediaQuery.of(context).size.width - 100;
@@ -32,23 +36,22 @@ class FirstSurvey extends HookWidget {
         subtitle: 'hd_FirstSurvey',
         appbarIcon: FaIcon(
           FontAwesomeIcons.listCheck,
-          color: Theme.of(context).colorScheme.darkPink,
+          color: userSettingsController.user.value.darkMode
+              ? Theme.of(context).colorScheme.lightPink
+              : Theme.of(context).colorScheme.darkPink,
         ),
       ),
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/images/tile_background.png'),
-                    fit: BoxFit.cover)),
-          ),
+          Background(),
           SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.only(
                   right: 20.0, left: 20.0, top: 50.0, bottom: 30.0),
               child: Column(children: [
                 BubbleContainer(
+                    imageUrl:
+                        'assets/images/first_survey_unsplash_trent_bradley.jpg',
                     icon: FaIcon(
                       FontAwesomeIcons.quoteLeft,
                       color: Theme.of(context).colorScheme.light,
@@ -58,13 +61,19 @@ class FirstSurvey extends HookWidget {
                       Text(
                         'qt_FirstSurvey'.tr,
                         style: GoogleFonts.merienda(
-                            fontSize: 18, fontWeight: FontWeight.w600),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.light),
                       ),
                       Align(
                         alignment: Alignment.centerRight,
                         child: Text(
                           'qt_FirstSurveyAuthor'.tr,
-                          style: Theme.of(context).textTheme.bodySmall,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                  color: Theme.of(context).colorScheme.light),
                         ),
                       )
                     ]),
@@ -74,14 +83,20 @@ class FirstSurvey extends HookWidget {
                 BubbleContainer(position: 'MIDDLE', children: [
                   Text(
                     'inf_FirstSurveyPart1'.tr,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(color: Theme.of(context).colorScheme.dark),
                   ),
                   const SizedBox(
                     height: 30.0,
                   ),
                   Text(
                     'inf_FirstSurveyPart2'.tr,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(color: Theme.of(context).colorScheme.dark),
                   ),
                 ]),
                 const SizedBox(
@@ -90,10 +105,9 @@ class FirstSurvey extends HookWidget {
                 BubbleContainer(position: 'END', children: [
                   Text(
                     'lbl_FirstSurvey'.tr,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge
-                        ?.copyWith(fontWeight: FontWeight.w600),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.dark),
                   ),
                 ]),
                 const SizedBox(
@@ -133,10 +147,8 @@ class FirstSurvey extends HookWidget {
                 BulbTip(
                     text: Text(
                   'tip_FirstSurvey'.tr,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: Theme.of(context).colorScheme.dark),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.brightPink),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 )),

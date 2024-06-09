@@ -4,49 +4,33 @@ import {
   serve,
 } from "https://deno.land/std@0.168.0/http/server.ts";
 import { corsHeaders } from "../_shared/cors.ts";
+import { handler as create_acquainted_session } from "./create-acquainted-session/handler.ts";
+import { handler as get_acquainted_current_session } from "./get-acquainted-current-session/handler.ts";
+import { handler as create_acquainted_session_survey } from "./create-acquainted-session-survey/handler.ts";
+import { handler as get_acquainted_previous_sessions } from "./get-acquainted-previous-sessions/handler.ts";
+import { handler as get_acquainted_session_survey } from "./get-acquainted-session-survey/handler.ts";
+import { handler as update_acquainted_session_survey } from "./update-acquainted-session-survey/handler.ts";
+import { handler as update_acquainted_session } from "./update-acquainted-session/handler.ts";
+import { handler as update_acquainted_survey } from "./update-acquainted-survey/handler.ts";
 
 console.log("Setting up localdev");
 
 const handlers = {
-  "create-acquainted-session": await import(
-    "./create-acquainted-session/handler.ts"
-  )
-    .then((it) => it.handler),
+  "create-acquainted-session": create_acquainted_session,
 
-  "create-acquainted-session-survey": await import(
-    "./create-acquainted-session-survey/handler.ts"
-  )
-    .then((it) => it.handler),
+  "create-acquainted-session-survey": create_acquainted_session_survey,
 
-  "get-acquainted-current-session": await import(
-    "./get-acquainted-current-session/handler.ts"
-  )
-    .then((it) => it.handler),
+  "get-acquainted-current-session": get_acquainted_current_session,
 
-  "get-acquainted-previous-sessions": await import(
-    "./get-acquainted-previous-sessions/handler.ts"
-  )
-    .then((it) => it.handler),
+  "get-acquainted-previous-sessions": get_acquainted_previous_sessions,
 
-  "get-acquainted-session-survey": await import(
-    "./get-acquainted-session-survey/handler.ts"
-  )
-    .then((it) => it.handler),
+  "get-acquainted-session-survey": get_acquainted_session_survey,
 
-  "update-acquainted-session": await import(
-    "./update-acquainted-session/handler.ts"
-  )
-    .then((it) => it.handler),
+  "update-acquainted-session": update_acquainted_session,
 
-  "update-acquainted-session-survey": await import(
-    "./update-acquainted-session-survey/handler.ts"
-  )
-    .then((it) => it.handler),
+  "update-acquainted-session-survey": update_acquainted_session_survey,
 
-  "update-acquainted-survey": await import(
-    "./update-acquainted-survey/handler.ts"
-  )
-    .then((it) => it.handler),
+  "update-acquainted-survey": update_acquainted_survey,
 } as Record<string, Handler>;
 
 function localdevHandler(req: Request, connInfo: ConnInfo) {
