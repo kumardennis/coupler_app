@@ -22,8 +22,8 @@ import 'locales/locale_en.dart';
 
 void main() async {
   // const localDBUrl = 'http://192.168.196.67:64321';
-  const localDBUrl = 'http://localhost:64321';
-  const remoteDDUrl = 'https://vpofopxljvcsghhtmeup.supabase.co';
+  const localDBUrl = 'http://127.0.0.1:34321';
+  const remoteDDUrl = 'https://qoiosbjtygcjsxhxkjli.supabase.co';
 
   final notificationService = NotificationService();
 

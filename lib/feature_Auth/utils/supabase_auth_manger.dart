@@ -16,7 +16,7 @@ import '../models/user_model.dart';
 
 // const String supabaseUrl = 'http://192.168.196.67:64321';
 const String supabaseRemoteUrl = 'https://vpofopxljvcsghhtmeup.supabase.co';
-const String supabaseUrl = 'http://localhost:64321';
+const String supabaseUrl = 'http://localhost:34321';
 final String anonKey = dotenv.env['SUPABASE_LOCAL_ANON_KEY'] ?? '';
 
 JsonEncoder encoder = const JsonEncoder.withIndent('  ');

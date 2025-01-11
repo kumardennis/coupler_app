@@ -22,24 +22,18 @@ export const handler = async (req: Request) => {
   const supabase = createSupabase(req);
 
   try {
-    const { coupleId, userId } = await req
-      .json();
+    const { coupleId, userId } = await req.json();
 
-    if (
-      !confirmedRequiredParams([
-        coupleId,
-        userId,
-      ])
-    ) {
+    if (!confirmedRequiredParams([coupleId, userId])) {
       return new Response(JSON.stringify(errorResponseData), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    let query = supabase.from("acquainted_sessions")
-      .select(
-        `*, ${constants.acquaintedQuestionQuery}`,
-      ).match({
+    let query = supabase
+      .from("acquainted_sessions")
+      .select(`*, ${constants.acquaintedQuestionQuery}`)
+      .match({
         hasEnded: false,
         coupleId,
       });
@@ -51,6 +45,8 @@ export const handler = async (req: Request) => {
       data,
       error,
     };
+
+    console.log(data);
 
     return new Response(JSON.stringify(responseData), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
